@@ -31,7 +31,7 @@ public class LoginController {
 		/* quando o botão login for clicado */
 		login.getLogar().setOnMouseClicked(e -> {
 			
-
+			System.out.println("aaaaaaa");
 
 			try {
 				/* pega o email e senhas digitados */

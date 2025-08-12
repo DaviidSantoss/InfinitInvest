@@ -2,7 +2,6 @@ module ProjetoInfinitInvest {
 
 	requires javafx.controls;
 	requires javafx.fxml;
-	requires org.controlsfx.controls;
 	requires javafx.media;
 	requires javafx.graphics;
 	requires java.xml;
