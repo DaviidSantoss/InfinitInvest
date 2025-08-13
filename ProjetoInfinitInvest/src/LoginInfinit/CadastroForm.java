@@ -25,6 +25,9 @@ import javafx.scene.text.Font;
 
 public class CadastroForm extends GridPane {
 
+	
+
+
 	// ====================
 	// Campos de entrada
 	// ====================
@@ -54,6 +57,7 @@ public class CadastroForm extends GridPane {
 	// ====================
 	// Getters
 	// ====================
+
 	public String getNome() {
 		return nomeField.getText();
 	}
@@ -61,6 +65,11 @@ public class CadastroForm extends GridPane {
 	public String getEmail() {
 		return emailField.getText();
 	}
+
+	public TextField getEmailField() {
+		return emailField;
+	}
+
 
 	public String getSenha() {
 		return senhaField.getText();
@@ -124,6 +133,7 @@ public class CadastroForm extends GridPane {
 		emailerro.setVisible(false);
 		nomerro.setVisible(false);
 		senhaerro.setVisible(false);
+
 
 		// ====================
 		// Título

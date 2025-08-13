@@ -2,6 +2,7 @@ package LoginInfinit;
 
 
 import ControllerInfinit.LoginController;
+import ControllerInfinit.ScreenManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -29,6 +30,7 @@ public class LoginForm extends VBox {
 	private PasswordField senhaField = new PasswordField();
 	private Button logar = new Button("Loginss");
 	private CheckBox checkBox = new CheckBox("Continuar Conectado.");
+	private Label erro = new Label("Email ou senha inválidos.");
 
 
 
@@ -93,29 +95,41 @@ public class LoginForm extends VBox {
 
 		Label cadastro = new Label("Não possui cadastro?");
 		cadastro.getStyleClass().add("cadastro");
-		cadastro.setTranslateX(-36);
 
-		Label aqui = new Label("            ");
+
+
+		Label aqui = new Label("Clique aqui.");
 		aqui.getStyleClass().addAll("cadastro");
-		aqui.setStyle("-fx-font-weight: bold;" + "-fx-cursor: hand;");
+		aqui.setStyle("-fx-font-weight: bold; -fx-cursor: hand;");
+
+		aqui.setOnMouseClicked(e -> {
+			ScreenManager.mostrarCadastro();
+		});
 
 		HBox vcadastro = new HBox(cadastro, aqui);
 		vcadastro.setAlignment(Pos.BASELINE_RIGHT);
+		vcadastro.setSpacing(3);
+		vcadastro.setTranslateX(-50);
+		
 
-		VBox linhasSenha = new VBox(10, senhaField, vcadastro);
+		VBox linhasSenha = new VBox(10, senhaField, checkBox, erro);
 		linhasSenha.setAlignment(Pos.CENTER);
 
 		checkBox.getStyleClass().add("cadastro");
-		checkBox.setTranslateX(40);
+		checkBox.setTranslateX(80);
 		checkBox.setTranslateY(10);
+
+		erro.setStyle("-fx-font-size: 16px; -fx-text-fill: red; -fx-font-weight: bold;");
+		erro.setTranslateY(15);
+		erro.setVisible(false);
 
 		logar.setPrefWidth(270);
 		logar.setPrefHeight(30);
 		logar.getStyleClass().add("botao-login");
 
-		VBox Butao = new VBox(logar, checkBox);
+		VBox Butao = new VBox(logar, vcadastro);
 		Butao.setAlignment(Pos.CENTER);
-		Butao.setSpacing(10);
+		Butao.setSpacing(20);
 		Butao.setPadding(new Insets(0, 0, 60, 0));
 
 		VBox conteudo = new VBox(linhasEmail, linhasSenha, Butao);
@@ -173,6 +187,14 @@ public class LoginForm extends VBox {
 
 	public void setCheckBox(CheckBox checkBox) {
 		this.checkBox = checkBox;
+	}
+
+	public Label getErro() {
+		return erro;
+	}
+
+	public void setErro(Label erro) {
+		this.erro = erro;
 	}
 
 }

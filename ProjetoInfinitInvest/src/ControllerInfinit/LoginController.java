@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
+	/* COMENTAR CÓDIGO E VER SE PRECISA DE ALGUA ULTIMA LAPIDAÇÃO */
 
 	private LoginForm login;
 	Dao dao;
@@ -59,12 +60,15 @@ public class LoginController {
 						Scene cenateste = new Scene(testecena);
 						stageAtual.setScene(cenateste);
 						stageAtual.setMaximized(true);
+						login.getErro().setVisible(false);
 						
 					} else {
 						System.out.println("Senha incorreta");
+						login.getErro().setVisible(true);
 					}
 				} else {
 					System.out.println("Usuário não encontrado");
+					login.getErro().setVisible(true);
 				}
 
 			} catch (SQLException ex) {

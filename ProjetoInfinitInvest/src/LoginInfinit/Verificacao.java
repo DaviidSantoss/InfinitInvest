@@ -50,6 +50,14 @@ public class Verificacao extends BorderPane {
 		setBackground(new Background(bg));
 
 		// ====================
+		// Label título acima da logo
+		// ====================
+		Label tituloCodigo = new Label("Insira o código que foi enviado para o seu Email");
+		tituloCodigo.setStyle("-fx-text-fill: white; -fx-font-size: 26px; -fx-font-weight: bold;");
+		tituloCodigo.setWrapText(true);
+		tituloCodigo.setAlignment(Pos.CENTER);
+
+		// ====================
 		// Foto Logo.
 		// ====================
 		Image fotoLogo = new Image(getClass().getResource("/LoginInfinit/imagens/logo.png").toExternalForm());
@@ -121,7 +129,7 @@ public class Verificacao extends BorderPane {
 		verlogo.setFitHeight(180);
 		verlogo.setFitWidth(180);
 
-		centerBox.getChildren().addAll(verlogo, CodField, confirmar, timeBox, erroBox);
+		centerBox.getChildren().addAll(verlogo, tituloCodigo, CodField, confirmar, timeBox, erroBox);
 
 		// ====================================
 		// StackPane para centralizar tudo no centro real da tela.

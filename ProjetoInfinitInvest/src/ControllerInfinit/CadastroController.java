@@ -7,7 +7,6 @@ import BancoInfinit.CodigoVerific;
 import BancoInfinit.Dao;
 import BancoInfinit.Usuario;
 import LoginInfinit.CadastroForm;
-import LoginInfinit.LoginView;
 import LoginInfinit.Verificacao;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -107,11 +106,15 @@ public class CadastroController {
 								verificacao.mostrarTelaSucesso(() -> {
 									System.out.println("Redirecionando para login...");
 
-									LoginView loginView = new LoginView(stageAtual);
-									Scene cenaCadastro = new Scene(loginView);
-									stageAtual.setScene(cenaCadastro);
-									stageAtual.setMaximized(true);
-
+									try {
+										ScreenManager.mostrarLogin(stageAtual);
+									} catch (IOException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									} catch (SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
 
 								});
 							} catch (IOException | SQLException e1) {
@@ -143,10 +146,15 @@ public class CadastroController {
 
 									verificacao.mostrarTelaSucesso(() -> {
 
-										LoginView loginView = new LoginView(stageAtual);
-										Scene cenaCadastro = new Scene(loginView);
-										stageAtual.setScene(cenaCadastro);
-										stageAtual.setMaximized(true);
+										try {
+											ScreenManager.mostrarLogin(stageAtual);
+										} catch (IOException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										} catch (SQLException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
 									});
 									
 								} catch (IOException | SQLException e1) {
@@ -166,20 +174,10 @@ public class CadastroController {
 				novaCena = new Scene(verificacao, 1920, 1080);
 				stageAtual.setScene(novaCena);
 				stageAtual.setMaximized(true);
-
-
 			}
-
-
 		});
-
-
-		
-
 	}
 	
-
-
 	// ====================
 	// Método para inserir usuário.
 	// ====================
