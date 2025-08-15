@@ -20,30 +20,29 @@ public class LoginController {
 	SessaoDAO sessaoDAO = new SessaoDAO();
 
 
-	// Construtor que recebe a view
+	// ====================
+	// Construtor que recebe a view.
+	// ====================
 	public LoginController(LoginForm login) throws IOException, SQLException {
 		this.login = login;
-		this.dao = new Dao(); // Inicialize aqui para evitar null
+		this.dao = new Dao();
 	}
 
 
 	public void configuraracoes() {
 
-		/* quando o botão login for clicado */
+		// ======================
+		// Quando o botão login for clicado.
+		// ======================
 		login.getLogar().setOnMouseClicked(e -> {
 
 
 			try {
-				/* pega o email e senhas digitados */
 				String emailDigitado = login.getEmailField().getText();
 				String senhaDigitada = login.getSenhaField().getText();
 
-				/* faz um select através do email digitado */
 				Usuario usuario = Dao.buscarPorEmail(emailDigitado);
 
-				/*
-				 * si o usuário for não nulo adicione a senha armazenada buscada pelo select acima e armazena na variavel "String senhaArmazenada"
-				 */
 				if (usuario != null) {
 					
 					String senhaArmazenada = usuario.getSenhaHash();
@@ -56,7 +55,7 @@ public class LoginController {
 
 						Stage stageAtual = (Stage) login.getLogar().getScene().getWindow();
 
-						teste testecena = new teste(); // agora é um StackPane
+						teste testecena = new teste();
 						Scene cenateste = new Scene(testecena);
 						stageAtual.setScene(cenateste);
 						stageAtual.setMaximized(true);
@@ -74,7 +73,22 @@ public class LoginController {
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 			}
+			
+			
 	});
+	}
 
+	// ======================
+	// Método para verificar sessão salva.
+	// ======================
+	public static boolean verificarSessaoSalva() {
+		try {
+			SessaoDAO sessaoDAO = new SessaoDAO();
+			Integer usuarioId = sessaoDAO.buscarSessao();
+			return usuarioId != null;
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

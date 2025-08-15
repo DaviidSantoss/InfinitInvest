@@ -28,7 +28,7 @@ public class LoginForm extends VBox {
 	private LoginController controller;
 	private TextField emailField = new TextField();
 	private PasswordField senhaField = new PasswordField();
-	private Button logar = new Button("Loginss");
+	private Button logar = new Button("Login");
 	private CheckBox checkBox = new CheckBox("Continuar Conectado.");
 	private Label erro = new Label("Email ou senha inválidos.");
 

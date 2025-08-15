@@ -12,7 +12,9 @@ public class SessaoDAO {
 
 	public SessaoDAO() throws IOException, SQLException {
 
-		/* Iniciamos a conexão */
+		// =============
+		// Iniciando a conexão
+		// =============
 		conn = Conexao.getInstance().getConnection();
 
 	}
@@ -21,7 +23,9 @@ public class SessaoDAO {
 		this.conn = conn;
 	}
 
-	/* SALVA E APAGA A SESSÃO. */
+	// =======================
+	// Método para salvar e pegar a sessão.
+	// =======================
 	public void salvarSessao(int usuarioId) throws SQLException {
 		String deleteSql = "DELETE FROM sessao";
 		try (PreparedStatement psDelete = conn.prepareStatement(deleteSql)) {
@@ -35,7 +39,9 @@ public class SessaoDAO {
 		}
 	}
 
-	// Buscar usuário logado
+	// =======================
+	// Método para Buscar usuário logado
+	// =======================
 	public Integer buscarSessao() throws SQLException {
 		String selectSql = "SELECT usuario_id FROM sessao LIMIT 1";
 		try (PreparedStatement ps = conn.prepareStatement(selectSql)) {
@@ -44,10 +50,12 @@ public class SessaoDAO {
 				return rs.getInt("usuario_id");
 			}
 		}
-		return null; // Nenhuma sessão ativa
+		return null;
 	}
 
-	// Limpar sessão (logout)
+	// =======================
+	// Método para Limpar sessão (logout)
+	// =======================
 	public void limparSessao() throws SQLException {
         String deleteSql = "DELETE FROM sessao";
         try (PreparedStatement ps = conn.prepareStatement(deleteSql)) {

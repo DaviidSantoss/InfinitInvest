@@ -2,6 +2,9 @@ package BancoInfinit;
 
 public class Usuario {
 
+	// =============
+	// Atributos do usuario.
+	// =============
 	private int id;
 	private String nome;
 	private String email;
@@ -10,12 +13,17 @@ public class Usuario {
 	private String codigoVerificacao;
 	private String dataEnvioCodigo;
 
-	/* Construtor padrão. */
+	// =============
+	// Construtor padrão.
+	// =============
+	/**/
 	public Usuario() {
 
 	}
 
-	/* Construtor para criar um novo usuário. */
+	// =====================
+	// Construtores para criar usuários.
+	// =====================
 	public Usuario(String nome, String email, String senhaHash) {
 		this.nome = nome;
 		this.email = email;
@@ -33,13 +41,15 @@ public class Usuario {
 		this.dataEnvioCodigo = null; // Pode setar depois
 	}
 
-	/* Construtor para os selectAll. */
 	public Usuario(int id, String nome, String email) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 	}
 
+	// =============
+	// Getters and Setters.
+	// =============
 	public int getId() {
 		return id;
 	}
@@ -96,6 +106,9 @@ public class Usuario {
 		this.dataEnvioCodigo = dataEnvioCodigo;
 	}
 
+	// ======================
+	// Método toString para formatação.
+	// ======================
 	@Override
 	public String toString() {
 

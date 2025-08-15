@@ -1,5 +1,6 @@
 package LoginInfinit;
 
+import ControllerInfinit.LoginController;
 import ControllerInfinit.ScreenManager;
 import javafx.application.Application;
 import javafx.scene.image.Image;
@@ -18,8 +19,7 @@ public class MainApp extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		ScreenManager.setPrimaryStage(primaryStage);
-		
-		ScreenManager manager = new ScreenManager();
+
 		// =====================
 		// Setando o nome e a maximização.
 		// =====================
@@ -30,7 +30,7 @@ public class MainApp extends Application {
 		// =========================
 		// executa o método mostrarCadastro();
 		// =========================
-		if (manager.verificarSessaoSalva()) {
+		if (LoginController.verificarSessaoSalva()) {
 			// Se existir sessão salva, vai direto pra tela principal
 			ScreenManager.mostrarTelaPrincipal();
 			;
