@@ -1,0 +1,38 @@
+{
+  "BBAS3": {
+    "ticker": "BBAS3",
+    "price": 21.87,
+    "name": "Banco do Brasil S.A.",
+    "type": "ACOES"
+  },
+  "PETR3F": {
+    "ticker": "PETR3F",
+    "price": 32.17,
+    "name": "PETROBRAS   ON      N2",
+    "type": "ACOES"
+  },
+  "PETR4F": {
+    "ticker": "PETR4F",
+    "price": 30.4,
+    "name": "PETROBRAS   PN      N2",
+    "type": "ACOES"
+  },
+  "BBAS3F": {
+    "ticker": "BBAS3F",
+    "price": 21.92,
+    "name": "BRASIL      ON      NM",
+    "type": "ACOES"
+  },
+  "PETR4": {
+    "ticker": "PETR4",
+    "price": 30.36,
+    "name": "Petróleo Brasileiro S.A. - Petrobras",
+    "type": "ACOES"
+  },
+  "PETR3": {
+    "ticker": "PETR3",
+    "price": 31.95,
+    "name": "Petróleo Brasileiro S.A. - Petrobras",
+    "type": "ACOES"
+  }
+}

@@ -1,0 +1,31 @@
+module ProjetoInfinitInvest {
+
+	requires javafx.controls;
+	requires javafx.fxml;
+	requires javafx.media;
+	requires javafx.graphics;
+	requires java.xml;
+	requires java.net.http;
+	requires org.json;
+	requires jdk.jdi;
+	requires java.desktop;
+	requires java.sql;
+	requires java.logging;
+	requires jakarta.activation;
+	requires jakarta.mail;
+	requires org.eclipse.angus.mail;
+	requires java.prefs;
+	requires javafx.web;
+	requires com.google.gson;
+	requires java.base;
+	requires com.github.benmanes.caffeine;
+	requires javafx.swing;
+
+	opens LoginInfinit;
+	opens BancoInfinit;
+	opens MainInfinit to javafx.graphics;
+	opens Apis;
+	opens ControllerInfinit;
+	
+
+}
