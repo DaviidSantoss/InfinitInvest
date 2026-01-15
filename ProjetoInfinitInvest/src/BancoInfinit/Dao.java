@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BancoInfinit.SessaoDAO.SessaoTemp;
+import ControllerInfinit.ResumoCarteira;
 
 public class Dao {
 
@@ -306,6 +307,16 @@ public class Dao {
 					    );
 					""");
 
+			// Tabela anotacoes (1 texto por usuário)
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS anotacoes (
+					        usuario_id INTEGER PRIMARY KEY,
+					        conteudo TEXT NOT NULL DEFAULT '',
+					        updated_at TEXT,
+					        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+					    );
+					""");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -325,6 +336,15 @@ public class Dao {
 					        preco_atual REAL NOT NULL,
 					        variacao REAL NOT NULL,
 					        saldo REAL NOT NULL
+					    );
+					""");
+			// Tabela anotacoes (1 texto por usuário)
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS anotacoes (
+					        usuario_id INTEGER PRIMARY KEY,
+					        conteudo TEXT NOT NULL DEFAULT '',
+					        updated_at TEXT,
+					        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 					    );
 					""");
 
@@ -551,6 +571,72 @@ public class Dao {
 		return out;
 	}
 
+	public ResumoCarteira obterResumoCarteira(int usuarioId) {
+		List<Ativo> ativos = listarAtivosUsuario(usuarioId);
+
+		double patrimonio = 0.0;
+		double investido = 0.0;
+
+		double somaPesoRent = 0.0; // somatório (retorno * valor investido)
+		double somaPesos = 0.0; // somatório valor investido
+
+		for (Ativo a : ativos) {
+			String cat = a.getCategoria() == null ? "" : a.getCategoria().trim();
+
+			double saldo = a.getSaldo();
+			patrimonio += saldo;
+
+			double invAtivo = 0.0; // custo bruto do ativo
+			double retornoAtivo = 0.0; // retorno percentual do ativo (ex: 0.10 = 10%)
+
+			// ===== Regras por categoria =====
+			if ("Tesouro Direto".equalsIgnoreCase(cat)) {
+				// Melhor fonte: td_principal (se você estiver preenchendo)
+				double principal = a.getTdPrincipal();
+				if (principal > 0) {
+					invAtivo = principal;
+				} else {
+					// fallback (se td_principal não estiver setado):
+					// assume que "variacao" é ganho/perda em R$ e saldo é valor atual
+					invAtivo = Math.max(0.0, saldo - a.getVariacao());
+				}
+
+				if (invAtivo > 0)
+					retornoAtivo = (saldo - invAtivo) / invAtivo;
+
+			} else if ("Renda Fixa".equalsIgnoreCase(cat)) {
+				// Você hoje grava RF com: saldo e variacao.
+				// Então investido bruto = saldo - variacao (se variacao for ganho/perda em R$)
+				invAtivo = Math.max(0.0, saldo - a.getVariacao());
+				if (invAtivo > 0)
+					retornoAtivo = (saldo - invAtivo) / invAtivo;
+
+			} else {
+				// Ações/FIIs/Cripto/ETF/etc
+				invAtivo = a.getQuantidade() * a.getPrecoMedio();
+				if (invAtivo > 0)
+					retornoAtivo = (saldo - invAtivo) / invAtivo;
+			}
+
+			investido += invAtivo;
+
+			if (invAtivo > 0) {
+				somaPesoRent += retornoAtivo * invAtivo;
+				somaPesos += invAtivo;
+			}
+		}
+
+		double lucro = patrimonio - investido;
+
+		double variacaoPct = (investido > 0) ? (lucro / investido) : 0.0;
+		double rentPond = (somaPesos > 0) ? (somaPesoRent / somaPesos) : 0.0;
+
+		// ganho de capital aqui ficou igual ao lucro total (se quiser separar no futuro, dá)
+		double ganhoCapital = lucro;
+
+		return new ResumoCarteira(patrimonio, investido, lucro, ganhoCapital, variacaoPct, rentPond);
+	}
+
 	// Mantém compatibilidade com chamadas antigas
 	public void insertAtivo(String categoria, String ativo, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo) {
 
@@ -620,6 +706,48 @@ public class Dao {
 			stmt.setString(6, nomeAtivo);
 
 			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String carregarAnotacoes(int usuarioId) {
+		String sql = "SELECT conteudo FROM anotacoes WHERE usuario_id = ?";
+		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+			ps.setInt(1, usuarioId);
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				String txt = rs.getString("conteudo");
+				return (txt == null) ? "" : txt;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public void salvarAnotacoes(int usuarioId, String conteudo) {
+		if (conteudo == null)
+			conteudo = "";
+
+		// SQLite UPSERT (INSERT ... ON CONFLICT DO UPDATE)
+		String sql = """
+				    INSERT INTO anotacoes (usuario_id, conteudo, updated_at)
+				    VALUES (?, ?, datetime('now'))
+				    ON CONFLICT(usuario_id)
+				    DO UPDATE SET conteudo = excluded.conteudo,
+				                  updated_at = datetime('now');
+				""";
+
+		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+			ps.setInt(1, usuarioId);
+			ps.setString(2, conteudo);
+			ps.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();

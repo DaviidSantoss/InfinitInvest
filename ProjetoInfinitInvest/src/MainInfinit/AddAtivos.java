@@ -2,6 +2,7 @@ package MainInfinit;
 
 import java.time.LocalDate;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -13,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -24,6 +27,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 public class AddAtivos extends StackPane {
 
@@ -32,6 +36,8 @@ public class AddAtivos extends StackPane {
 	// -----------------------------
 	private double xOffset = 0;
 	private double yOffset = 0;
+
+	private Stage dialog; // ✅ guarda referência do stage atual
 
 	private Button AdicionarAtivios = new Button("+ Adicionar");
 
@@ -49,6 +55,11 @@ public class AddAtivos extends StackPane {
 	private DatePicker datePicker;
 	public boolean precoSetByApi = false;
 
+	// ✅ overlay (funciona em StackPane)
+	private final StackPane overlaySucesso = new StackPane();
+
+
+
 	// ---- CAMPOS RENDA FIXA ----
 	private TextField emissorField;
 	private ComboBox<String> indexadorCombo;
@@ -61,7 +72,8 @@ public class AddAtivos extends StackPane {
 	// -----------------------------
 	public void show(Stage owner) {
 
-		Stage dialog = new Stage();
+		// ✅ guarda o stage na instância (pra usar no mostrarTelaSucesso)
+		dialog = new Stage();
 		dialog.initOwner(owner);
 		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.initStyle(StageStyle.UNDECORATED);
@@ -103,7 +115,7 @@ public class AddAtivos extends StackPane {
 		Button closeBtn = new Button("✕");
 		closeBtn.setCursor(Cursor.HAND);
 		closeBtn.setOnAction(e -> dialog.close());
-		closeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: white;");
+		closeBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
 
 		Region spacerTop = new Region();
 		HBox.setHgrow(spacerTop, Priority.ALWAYS);
@@ -200,8 +212,6 @@ public class AddAtivos extends StackPane {
 		precoField.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(precoField, Priority.ALWAYS);
 
-
-
 		Label qtdLabel = new Label("Quantidade");
 		qtdLabel.getStyleClass().add("form-label");
 
@@ -213,7 +223,7 @@ public class AddAtivos extends StackPane {
 		totalLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white; -fx-font-weight: bold;");
 
 		// -----------------------------------------------------------------------
-		// 5) CAMPOS DE RENDA FIXA (OPÇÃO A — LAYOUT ESTILIZADO)
+		// 5) CAMPOS DE RENDA FIXA
 		// -----------------------------------------------------------------------
 
 		Label emissorLabel = new Label("Emissor");
@@ -283,7 +293,7 @@ public class AddAtivos extends StackPane {
 		});
 
 		// -----------------------------------------------------------------------
-		// 6) BOTTOM BAR (AGORA INICIALMENTE ADICIONADO)
+		// 6) BOTTOM BAR
 		// -----------------------------------------------------------------------
 
 		AdicionarAtivios.getStyleClass().add("botao-dialog");
@@ -318,7 +328,7 @@ public class AddAtivos extends StackPane {
 		grid.add(qtdLabel, 1, 2);
 		grid.add(qtdField, 1, 3);
 
-		// CAMPOS DE RENDA FIXA (COLUNA 1 E COLUNA 0)
+		// CAMPOS DE RENDA FIXA
 		grid.add(emissorLabel, 1, 0);
 		grid.add(emissorField, 1, 1);
 
@@ -390,20 +400,68 @@ public class AddAtivos extends StackPane {
 		});
 
 		// -----------------------------------------------------------------------
-		// 9) ROOT + CENA
+		// 9) ROOT + CENA + OVERLAY (mantém o X como antes)
 		// -----------------------------------------------------------------------
 
 		VBox content = new VBox(togglePane, grid);
 		content.setStyle("-fx-background-color: #212121;");
 		VBox.setVgrow(grid, Priority.ALWAYS);
 
+		// ✅ exatamente como na versão antiga (isso garante o X)
 		VBox root = new VBox(topBar, content);
-		Scene scene = new Scene(root, 630, 430);
 
+		// ✅ overlay por cima do root
+		overlaySucesso.setVisible(false);
+		overlaySucesso.setManaged(false);
+		overlaySucesso.setMouseTransparent(true); // ✅ não bloqueia cliques quando escondido
+
+		StackPane sceneRoot = new StackPane(root, overlaySucesso);
+		StackPane.setAlignment(overlaySucesso, Pos.CENTER);
+
+		Scene scene = new Scene(sceneRoot, 630, 490);
 		scene.getStylesheets().add(AddAtivos.class.getResource("/LoginInfinit/Login.css").toExternalForm());
 
 		dialog.setScene(scene);
 		dialog.showAndWait();
+
+
+	}
+
+	// ✅ agora funciona em StackPane (overlay por cima)
+	public void mostrarTelaSucesso(Runnable acaoDepois) {
+
+		Image setaVerde = new Image(getClass().getResource("/LoginInfinit/imagens/seta-verde.png").toExternalForm());
+		ImageView setaView = new ImageView(setaVerde);
+		setaView.setFitWidth(100);
+		setaView.setFitHeight(100);
+		setaView.setPreserveRatio(true);
+
+		Label mensagem = new Label("Ativo Adicionado!");
+		mensagem.setStyle("-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;");
+
+		VBox sucessoBox = new VBox(20, setaView, mensagem);
+		sucessoBox.setAlignment(Pos.CENTER);
+
+		overlaySucesso.setStyle("-fx-background-color: rgba(0,0,0,0.55);");
+		overlaySucesso.getChildren().setAll(sucessoBox);
+		overlaySucesso.setAlignment(Pos.CENTER);
+
+		overlaySucesso.setMouseTransparent(false);
+		overlaySucesso.setVisible(true);
+		overlaySucesso.setManaged(true);
+
+
+		PauseTransition pause = new PauseTransition(Duration.seconds(3));
+		pause.setOnFinished(event -> {
+			overlaySucesso.setVisible(false);
+			overlaySucesso.setManaged(false);
+			overlaySucesso.setMouseTransparent(true);
+
+			if (acaoDepois != null)
+				acaoDepois.run();
+		});
+
+		pause.play();
 	}
 
 	// -----------------------------

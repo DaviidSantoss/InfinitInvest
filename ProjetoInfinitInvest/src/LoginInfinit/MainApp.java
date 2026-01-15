@@ -22,7 +22,6 @@ public class MainApp extends Application {
 	@Override
 	public void start(Stage primaryStage) throws SQLException {
 		ScreenManager.setPrimaryStage(primaryStage);
-//		Dao.limparAtivos();
 		Dao.initDatabase();
 		Dao.migrarBancoSeNecessario();
 

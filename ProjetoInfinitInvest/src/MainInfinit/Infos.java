@@ -1,5 +1,7 @@
 package MainInfinit;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -7,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import BancoInfinit.Dao;
 import BancoInfinit.SessaoDAO.SessaoTemp;
+import ControllerInfinit.ResumoCarteira;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,18 +30,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 
+
 public class Infos extends StackPane {
 
-	private TextField searchField = new TextField(); // barra de pesquisa
+	private TextField searchField = new TextField(); // barra de pesquisa(não vamos fazer nada com ela por enquanto)
 	private Label PValor = new Label("R$ 279.027,76"); // Valor Patrimonio total(isso valor leva em cosideração a variação dos ativos.)
-	private Label PPorcent = new Label("-1%"); // Porcentagem da variação do patrimonio total.
-	private Label VInvestT = new Label("R$ 280.187,55"); // Valor bruto investido(só leva em consideração o dinheiro bruto)
-	private Label LValor = new Label("R$ -1.159,79");// Lucro total, leva em consideração a varição em porcentagem mais os dividendos.
+	private Label PPorcent = new Label("-1%"); // Porcentagem da variação do patrimonio total.(se for positivo deve ficar verde se for negativo deve ficar vermelho, e ser for neutra deve ficar branco
+	private Label VInvestT = new Label("R$ 280.187,55"); // Valor bruto investido(só leva em consideração o dinheiro bruto investido não conta variação)
+	private Label LValor = new Label("R$ -1.159,79");// Lucro total, leva em consideração a varição em porcentagem ou seja se o usuário tem 1M e os seus ativos subiram 2% essa variável tera que ter o
+														// valor de 20k entende?.
 	private Label VGCapital = new Label("R$ -1.309,79"); // Ganho de capital valor bruto da variação.
-	private Label VPRecebidos = new Label("R$ 150,0"); // Soma dos divedendos recebidos em 12 meses.
 	private Label VariacaoP = new Label("-1,2%"); // Variação (é a relação entre o valor investido e o patrimonio total.
 	private Label VariacaoValor = new Label("R$ -1.309,79"); // Valor bruto da variação.
-	private Label RentabilidadeV = new Label("3,25%");// Rentabilidade pondera (Estudar esse caso.)
+	private Label RentabilidadeV = new Label("3,25%");// Rentabilidade pondera de todos os ativos do usuário.
 	private Button AddInit = new Button("+ Adicionar ativo");
 	private ListaDeAtivos listaDeAtivos = new ListaDeAtivos();
 
@@ -170,11 +175,8 @@ public class Infos extends StackPane {
 
 		VGCapital.setStyle("-fx-text-fill: white; -fx-font-size: 24px;");
 
-		Label PRecebidos = new Label("Proventos recebidos (12M)");
-		PRecebidos.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
 
-
-		VPRecebidos.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
+//		VPRecebidos.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
 
 		// ICONE DA LABEL PROVENTOS RECEBIDOS.
 		LTotal.setGraphic(iconePR);
@@ -197,15 +199,12 @@ public class Infos extends StackPane {
 		StackPane.setAlignment(VGCapital, Pos.TOP_LEFT);
 		StackPane.setMargin(VGCapital, new Insets(200, 0, 0, 100));
 
-		// CONFIG POSIÇÃO LABEL PROVENTOS RECEBIDOS
-		StackPane.setAlignment(PRecebidos, Pos.TOP_LEFT);
-		StackPane.setMargin(PRecebidos, new Insets(160, 0, 0, 330));
 
-		// CONFIG POSIÇÃO LABEL VALOR PROVENTOS RECEBIDOS
-		StackPane.setAlignment(VPRecebidos, Pos.TOP_LEFT);
-		StackPane.setMargin(VPRecebidos, new Insets(200, 0, 0, 380));
+//		// CONFIG POSIÇÃO LABEL VALOR PROVENTOS RECEBIDOS
+//		StackPane.setAlignment(VPRecebidos, Pos.TOP_LEFT);
+//		StackPane.setMargin(VPRecebidos, new Insets(200, 0, 0, 380));
 
-		quadrado2.getChildren().addAll(LTotal, LValor, GCapital, VGCapital, PRecebidos, VPRecebidos);
+		quadrado2.getChildren().addAll(LTotal, LValor, GCapital, VGCapital);
 
 		// =====================
 		// Quadrado 3.
@@ -326,13 +325,66 @@ public class Infos extends StackPane {
 
 				Dao dao = new Dao();
 				Map<String, Double> totais = dao.obterTotaisPorCategoria(usuarioId);
+				ResumoCarteira resumo = dao.obterResumoCarteira(usuarioId);
 
-				graficoAtivos.atualizar(totais);
+				// gráfico pode ser direto (ele não é UI padrão? depende do seu GraficoAtivos)
+				// mas por segurança, UI sempre no Platform.runLater
+				Platform.runLater(() -> {
+					graficoAtivos.atualizar(totais);
+					atualizarLabelsPainel(resumo);
+				});
+
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}, 0, 10, TimeUnit.SECONDS); // 10s fica bem “vivo”
+	}
+
+	private static final Locale LOCALE_BR = new Locale("pt", "BR");
+	private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(LOCALE_BR);
+	private static final NumberFormat PCT = NumberFormat.getPercentInstance(LOCALE_BR);
+
+	private String fmtMoeda(double v) {
+		return MOEDA.format(v);
+	}
+
+	private String fmtPct(double v) {
+		PCT.setMinimumFractionDigits(2);
+		PCT.setMaximumFractionDigits(2);
+		return PCT.format(v);
+	}
+
+	private void aplicarCor(Label label, double valor) {
+		if (valor > 0)
+			label.setStyle(label.getStyle() + "-fx-text-fill: #2ecc71;"); // verde
+		else if (valor < 0)
+			label.setStyle(label.getStyle() + "-fx-text-fill: #e74c3c;"); // vermelho
+		else
+			label.setStyle(label.getStyle() + "-fx-text-fill: white;");
+	}
+
+	private void atualizarLabelsPainel(ResumoCarteira r) {
+		// Valores
+		PValor.setText(fmtMoeda(r.patrimonioTotal));
+		VInvestT.setText(fmtMoeda(r.valorInvestido));
+		LValor.setText(fmtMoeda(r.lucroTotal));
+		VGCapital.setText(fmtMoeda(r.ganhoCapital));
+
+		// Percentuais
+		PPorcent.setText(fmtPct(r.variacaoPercentual));
+		VariacaoP.setText(fmtPct(r.variacaoPercentual));
+		VariacaoValor.setText(fmtMoeda(r.lucroTotal));
+		RentabilidadeV.setText(fmtPct(r.rentabilidadePonderada));
+
+		// Cores (baseadas nos sinais)
+		aplicarCor(PPorcent, r.variacaoPercentual);
+		aplicarCor(VariacaoP, r.variacaoPercentual);
+
+		aplicarCor(LValor, r.lucroTotal);
+		aplicarCor(VGCapital, r.ganhoCapital);
+
+		aplicarCor(RentabilidadeV, r.rentabilidadePonderada);
 	}
 
 
@@ -389,13 +441,13 @@ public class Infos extends StackPane {
 		VGCapital = vGCapital;
 	}
 
-	public Label getVPRecebidos() {
-		return VPRecebidos;
-	}
-
-	public void setVPRecebidos(Label vPRecebidos) {
-		VPRecebidos = vPRecebidos;
-	}
+//	public Label getVPRecebidos() {
+//		return VPRecebidos;
+//	}
+//
+//	public void setVPRecebidos(Label vPRecebidos) {
+//		VPRecebidos = vPRecebidos;
+//	}
 
 	public Label getVariacaoP() {
 		return VariacaoP;

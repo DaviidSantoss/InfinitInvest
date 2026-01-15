@@ -46,6 +46,11 @@ public class AddAtivosController {
 	private final ExecutorService executor = Executors.newCachedThreadPool();
 	private final PauseTransition pause = new PauseTransition(Duration.millis(320));
 
+	private final java.util.concurrent.atomic.AtomicBoolean atualizandoAtivos = new java.util.concurrent.atomic.AtomicBoolean(false);
+	private final java.util.concurrent.atomic.AtomicBoolean atualizandoCriptos = new java.util.concurrent.atomic.AtomicBoolean(false);
+	private final java.util.concurrent.atomic.AtomicBoolean atualizandoTesouro = new java.util.concurrent.atomic.AtomicBoolean(false);
+
+
 	private AssetType tipoSelecionado = AssetType.ACOES;
 	private TituloTesouro tesouroSelecionado;
 
@@ -80,6 +85,7 @@ public class AddAtivosController {
 		configurarCampoPreco();
 		configurarBotaoAdicionar();
 
+
 		scheduler.scheduleAtFixedRate(this::atualizarTesouroDiretoRendimento, 5, 60, TimeUnit.SECONDS);
 		scheduler.scheduleAtFixedRate(this::atualizarAtivosDoUsuario, 0, 5, TimeUnit.MINUTES);
 		scheduler.scheduleAtFixedRate(this::atualizarCriptos, 10, 60, TimeUnit.SECONDS);
@@ -94,9 +100,13 @@ public class AddAtivosController {
 	// ==========================================================
 
 	// Atualiza periodicamente preços de ações, FIIs e ETFs.
-	// Sincroniza API, banco e lista visual do usuário.
+	// Sincroniza API, banco e lista visual do usuário.processarAdicaoAcoes
 
 	private void atualizarAtivosDoUsuario() {
+
+		if (!atualizandoAtivos.compareAndSet(false, true))
+			return;
+
 		try {
 			Integer usuarioId = SessaoTemp.getUsuarioId();
 			if (usuarioId == null)
@@ -143,7 +153,17 @@ public class AddAtivosController {
 							dao.atualizarIconUrl(ativo.getId(), logoUrl);
 						}
 
-						Platform.runLater(() -> listaView.atualizarOuAdicionarAtivo(ativo.getCategoria(), ativo.getAtivo(), logoUrl, ativo.getQuantidade(), precoMedio, precoAtual, variacao, saldo));
+						double dyMensalPercent = 0.0;
+						try {
+							dyMensalPercent = Brapi.buscarDividendYieldMensal12mPercent(ticker, precoAtual);
+						} catch (Exception ignored) {
+						}
+
+						final double dyMensalFinal = dyMensalPercent;
+
+						Platform.runLater(() -> listaView.atualizarOuAdicionarAtivo(ativo.getCategoria(), ativo.getAtivo(), logoUrl, ativo.getQuantidade(), precoMedio, precoAtual, variacao,
+								dyMensalFinal, saldo));
+
 
 
 					} catch (Exception ignored) {
@@ -154,6 +174,11 @@ public class AddAtivosController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		finally {
+			atualizandoAtivos.set(false);
+		}
+
 	}
 
 
@@ -161,6 +186,9 @@ public class AddAtivosController {
 	// Usa API específica de cripto e recalcula saldo e variação.
 
 	private void atualizarCriptos() {
+
+		if (!atualizandoCriptos.compareAndSet(false, true))
+			return;
 		try {
 			Integer usuarioId = SessaoTemp.getUsuarioId();
 			if (usuarioId == null)
@@ -198,7 +226,6 @@ public class AddAtivosController {
 
 							// preço mudou mais de 80% em 1 minuto? provavelmente ticker errado/moeda errada
 							if (ratio < 0.2 || ratio > 5.0) {
-								System.out.println("[CRYPTO-SKIP] provável preço inválido. symbol=" + symbol + " tickerApi=" + tickerApi + " pm=" + precoMedio + " preco=" + precoAtual);
 								return;
 							}
 						}
@@ -604,13 +631,27 @@ public class AddAtivosController {
 						dao.atualizarAtivo(ativoExistente.getId(), rentabilidadeExistente, 0.0, 0.0, variacaoExistente, novoSaldo);
 
 						// atualiza UI
-						Platform.runLater(() -> listaView.atualizarOuAdicionarRendaFixa(nomeAtivoFinal, rentabilidadeExistente, variacaoExistente, novoSaldo));
+						Platform.runLater(() -> {
+							listaView.atualizarOuAdicionarRendaFixa(nomeAtivoFinal, rentabilidadeExistente, variacaoExistente, novoSaldo);
+
+							view.mostrarTelaSucesso(() -> {
+								// aqui você pode só atualizar painel/infos via banco,
+								// mas como RF não depende de API, pode ser só um refresh da lista se quiser.
+							});
+						});
 
 					} else {
 						// não existe: insere novo (quantidade guarda a rentabilidade)
 						dao.insertRendaFixa(usuarioId, nomeAtivoFinal, taxaFinal, 0.0, valorInicialFinal);
 
-						Platform.runLater(() -> listaView.adicionarRendaFixa(nomeAtivoFinal, taxaFinal, 0.0, valorInicialFinal));
+						Platform.runLater(() -> {
+							listaView.adicionarRendaFixa(nomeAtivoFinal, taxaFinal, 0.0, valorInicialFinal);
+
+							view.mostrarTelaSucesso(() -> {
+								// opcional: nada, ou recalcular painéis
+							});
+						});
+
 					}
 
 				} catch (Exception ex) {
@@ -686,7 +727,13 @@ public class AddAtivosController {
 
 						dao.atualizarCamposTesouroMeta(existente.getId(), indexador, taxaAnual, principalNovo, hojeStr);
 
-						Platform.runLater(() -> listaView.atualizarOuAdicionarTesouroDireto(nomeAtivo, qtdTotal.doubleValue(), variacao, saldoTotal.doubleValue()));
+						Platform.runLater(() -> {
+							listaView.atualizarOuAdicionarTesouroDireto(nomeAtivo, qtdTotal.doubleValue(), variacao, saldoTotal.doubleValue());
+
+							view.mostrarTelaSucesso(() -> {
+								atualizarTesouroDiretoRendimento(); // força render do TD
+							});
+						});
 
 					} else {
 
@@ -700,7 +747,13 @@ public class AddAtivosController {
 						double taxaAnual = t.getTaxaAnual();
 						dao.atualizarCamposTesouroMetaPorNome(usuarioId, nomeAtivo, indexador, taxaAnual, aporte, hojeStr);
 
-						Platform.runLater(() -> listaView.adicionarTesouroDireto(nomeAtivo, quantidade.doubleValue(), variacao.doubleValue(), saldo.doubleValue()));
+						Platform.runLater(() -> {
+							listaView.adicionarTesouroDireto(nomeAtivo, quantidade.doubleValue(), variacao.doubleValue(), saldo.doubleValue());
+
+							view.mostrarTelaSucesso(() -> {
+								atualizarTesouroDiretoRendimento();
+							});
+						});
 
 					}
 
@@ -745,12 +798,40 @@ public class AddAtivosController {
 						double saldo = precoAtual * qtdTotal;
 						double variacao = ((precoAtual - novoPM) / novoPM) * 100;
 						
+						double rendimentoMensal = 0.0;
+
+						try {
+							rendimentoMensal = Brapi.buscarDividendYieldMensal12mPercent(ticker, precoAtual);
+
+						} catch (Exception ex) {
+							System.out.println("[DIV] falha ao buscar rendimento: " + ticker + " -> " + ex.getMessage());
+							ex.printStackTrace();
+							rendimentoMensal = 0.0;
+						}
+						System.out.println("[DIV] " + ticker + " qtd=" + qtdTotal + " rendMensal(R$)=" + rendimentoMensal);
 
 						dao.atualizarAtivo(ativoExistente.getId(), qtdTotal, novoPM, precoAtual, variacao, saldo);
 
 						String logoUrl = buildLogoUrl(ticker);
+						
 
-						Platform.runLater(() -> listaView.atualizarOuAdicionarAtivo(categoria, ticker, logoUrl, qtdTotal, novoPM, precoAtual, variacao, saldo));
+						double dyMensalPercent = 0.0;
+						try {
+						    dyMensalPercent = Brapi.buscarDividendYieldMensal12mPercent(ticker, precoAtual);
+						} catch (Exception ignored) {}
+
+						final double dyMensalFinal = dyMensalPercent;
+
+						Platform.runLater(() -> {
+							listaView.atualizarOuAdicionarAtivo(categoria, ticker, logoUrl, qtdTotal, novoPM, precoAtual, variacao, dyMensalFinal, saldo);
+
+							view.mostrarTelaSucesso(() -> {
+								atualizarAtivosDoUsuario();
+
+
+							});
+						});
+
 
 					} else {
 
@@ -759,7 +840,14 @@ public class AddAtivosController {
 
 						dao.insertAtivo(categoria, ticker, logoUrl, qtdNova, precoAtual, precoAtual, 0, saldo);
 
-						Platform.runLater(() -> listaView.adicionarAcoesEFiis(categoria, ticker, logoUrl, qtdNova, precoAtual, precoAtual, 0.0, saldo));
+						Platform.runLater(() -> {
+							listaView.adicionarAcoesEFiis(categoria, ticker, logoUrl, qtdNova, precoAtual, precoAtual, 0.0, saldo);
+
+							view.mostrarTelaSucesso(() -> {
+								atualizarAtivosDoUsuario();
+							});
+						});
+
 					}
 
 				} catch (Exception ex) {
@@ -809,7 +897,13 @@ public class AddAtivosController {
 							dao.atualizarIconUrl(ativoExistente.getId(), logoUrl);
 						}
 
-						Platform.runLater(() -> listaView.atualizarOuAdicionarCriptomoeda(logoUrl, sym, qtdTotal, novoPM, precoAtual, variacao, saldo));
+						Platform.runLater(() -> {
+							listaView.atualizarOuAdicionarCriptomoeda(logoUrl, sym, qtdTotal, novoPM, precoAtual, variacao, saldo);
+
+							view.mostrarTelaSucesso(() -> {
+								atualizarCriptos(); // força o refresh de cripto
+							});
+						});
 
 					} else {
 
@@ -820,7 +914,13 @@ public class AddAtivosController {
 						dao.insertAtivo("Criptomoedas", sym, logoUrl, qtdNova, precoAtual, precoAtual, 0, saldo);
 
 						final String logoFinal = logoUrl;
-						Platform.runLater(() -> listaView.adicionarCriptomoeda(logoFinal, sym, qtdNova, precoAtual, precoAtual, 0.0, saldo));
+						Platform.runLater(() -> {
+							listaView.adicionarCriptomoeda(logoFinal, sym, qtdNova, precoAtual, precoAtual, 0.0, saldo);
+
+							view.mostrarTelaSucesso(() -> {
+								atualizarCriptos();
+							});
+						});
 
 					}
 
@@ -835,6 +935,9 @@ public class AddAtivosController {
 
 
 	private void atualizarTesouroDiretoRendimento() {
+
+		if (!atualizandoTesouro.compareAndSet(false, true))
+			return;
 		try {
 			Integer usuarioId = SessaoTemp.getUsuarioId();
 			if (usuarioId == null)
@@ -848,7 +951,7 @@ public class AddAtivosController {
 			// Data atual do PC
 			java.time.LocalDate hoje = java.time.LocalDate.now();
 
-			System.out.println("[TD] rodando rendimento. hoje=" + hoje);
+
 
 			executor.submit(() -> {
 				try {

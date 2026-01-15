@@ -1,9 +1,57 @@
 {
-  "BBAS3": {
-    "ticker": "BBAS3",
-    "price": 21.87,
-    "name": "Banco do Brasil S.A.",
+  "VGHF11": {
+    "ticker": "VGHF11",
+    "price": 7.2,
+    "name": "Valora Hedge Fund Fundo De Investimento Imobiliario - Fii",
+    "type": "FIIS"
+  },
+  "BBAS3F": {
+    "ticker": "BBAS3F",
+    "price": 21.92,
+    "name": "BRASIL      ON      NM",
     "type": "ACOES"
+  },
+  "GEOO34": {
+    "ticker": "GEOO34",
+    "price": 1752.03,
+    "name": "General Electric Company",
+    "type": "ACOES"
+  },
+  "BTCI11": {
+    "ticker": "BTCI11",
+    "price": 9.28,
+    "name": "Fundo Infestimento Imobiliario Btg Pactual Credito Imobiliario",
+    "type": "FIIS"
+  },
+  "OBTC3": {
+    "ticker": "OBTC3",
+    "price": 9.17,
+    "name": "Oranjebtc S.A. - Educação e Investimento",
+    "type": "ACOES"
+  },
+  "CMCS34": {
+    "ticker": "CMCS34",
+    "price": 30.6,
+    "name": "Comcast Corporation",
+    "type": "ACOES"
+  },
+  "RCRI11": {
+    "ticker": "RCRI11",
+    "price": 102.75,
+    "name": "Real Investor Recebiveis Imobiliários Fundo De Investimento Imobiliario Responsabilidade Limitada",
+    "type": "FIIS"
+  },
+  "FIGE3F": {
+    "ticker": "FIGE3F",
+    "price": 39,
+    "name": "INVEST BEMGEON",
+    "type": "ACOES"
+  },
+  "GCRI11": {
+    "ticker": "GCRI11",
+    "price": 65.3,
+    "name": "Galapagos Recebiveis Imobiliarios Fundo De Investimento Imobiliario",
+    "type": "FIIS"
   },
   "PETR3F": {
     "ticker": "PETR3F",
@@ -11,17 +59,341 @@
     "name": "PETROBRAS   ON      N2",
     "type": "ACOES"
   },
-  "PETR4F": {
-    "ticker": "PETR4F",
-    "price": 30.4,
-    "name": "PETROBRAS   PN      N2",
+  "MCRE11": {
+    "ticker": "MCRE11",
+    "price": 9.59,
+    "name": "Maua Capital Real Estate Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
+  "BBDC3F": {
+    "ticker": "BBDC3F",
+    "price": 15.75,
+    "name": "BRADESCO    ON  EJ  N1",
     "type": "ACOES"
   },
-  "BBAS3F": {
-    "ticker": "BBAS3F",
-    "price": 21.92,
-    "name": "BRASIL      ON      NM",
+  "VVCR11": {
+    "ticker": "VVCR11",
+    "price": 9.4,
+    "name": "V2 Recebíveis Imobiliários Fundo de Investimento Imobiliário",
+    "type": "FIIS"
+  },
+  "BBDC4": {
+    "ticker": "BBDC4",
+    "price": 18.19,
+    "name": "Banco Bradesco S.A.",
     "type": "ACOES"
+  },
+  "GCRA11": {
+    "ticker": "GCRA11",
+    "price": 55.49,
+    "name": "Galapagos Recebiveis Do Agronegocio Fiagro Imobiliario",
+    "type": "FIIS"
+  },
+  "VALE3": {
+    "ticker": "VALE3",
+    "price": 75.35,
+    "name": "Vale S.A.",
+    "type": "ACOES"
+  },
+  "BBDC3": {
+    "ticker": "BBDC3",
+    "price": 15.6,
+    "name": "Banco Bradesco S.A.",
+    "type": "ACOES"
+  },
+  "CRPG5": {
+    "ticker": "CRPG5",
+    "price": 19.45,
+    "name": "Tronox Pigmentos do Brasil S.A.",
+    "type": "ACOES"
+  },
+  "VCRR11": {
+    "ticker": "VCRR11",
+    "price": 67,
+    "name": "Vectis Renda Residencial Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
+  "GEPA3F": {
+    "ticker": "GEPA3F",
+    "price": 32.51,
+    "name": "GER PARANAP ON  ED",
+    "type": "ACOES"
+  },
+  "MXRF11": {
+    "ticker": "MXRF11",
+    "price": 9.49,
+    "name": "Maxi Renda Fundo De Investimento Imobiliaro - FII",
+    "type": "FIIS"
+  },
+  "A1CR34": {
+    "ticker": "A1CR34",
+    "price": 45.98,
+    "name": "Amcor plc",
+    "type": "ACOES"
+  },
+  "CYCR11": {
+    "ticker": "CYCR11",
+    "price": 8.82,
+    "name": "Cyrela Credito - Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
+  "ARGE11": {
+    "ticker": "ARGE11",
+    "price": 12.91,
+    "name": "Investo Argentina Fundo De Índice",
+    "type": "FIIS"
+  },
+  "HCRI11": {
+    "ticker": "HCRI11",
+    "price": 314.14,
+    "name": "Fundo de Investimento Imobiliário - FII Hospital da Criança",
+    "type": "FIIS"
+  },
+  "CACR11": {
+    "ticker": "CACR11",
+    "price": 78.9,
+    "name": "Supernova Fundo De Investimento Imobiliario - Recebiveis Imobiliarios",
+    "type": "FIIS"
+  },
+  "ANCR11": {
+    "ticker": "ANCR11",
+    "price": 321.74,
+    "name": "Fundo de Investimento Imobiliário - FII Ancar IC",
+    "type": "FIIS"
+  },
+  "CRPG5F": {
+    "ticker": "CRPG5F",
+    "price": 18.51,
+    "name": "CRISTAL     PNA",
+    "type": "ACOES"
+  },
+  "GENB11": {
+    "ticker": "GENB11",
+    "price": 17.8,
+    "name": "Btg Pactual S&P B3 Ingenius Fundo De Indice",
+    "type": "FIIS"
+  },
+  "HGCR11": {
+    "ticker": "HGCR11",
+    "price": 98.32,
+    "name": "CSHG Recebiveis Imobiliarios BC Fundo de Investimento Imobiliario - FII",
+    "type": "FIIS"
+  },
+  "VCRA11": {
+    "ticker": "VCRA11",
+    "price": 64.85,
+    "name": "Vectis Datagro Crédito Agronegócio - Fi Nas Cadeias Produtivas Do Agronegócio Resp Limitada",
+    "type": "FIIS"
+  },
+  "BCRI11": {
+    "ticker": "BCRI11",
+    "price": 69.12,
+    "name": "Banestes Recebiveis Imobiliarios Fundo Investimento Imobiliario FII",
+    "type": "FIIS"
+  },
+  "CMIG4F": {
+    "ticker": "CMIG4F",
+    "price": 10.76,
+    "name": "CEMIG       PN      N1",
+    "type": "ACOES"
+  },
+  "VALE3F": {
+    "ticker": "VALE3F",
+    "price": 75.32,
+    "name": "VALE        ON      NM",
+    "type": "ACOES"
+  },
+  "CCME11": {
+    "ticker": "CCME11",
+    "price": 8.96,
+    "name": "Canuma Capital Multiestrategia Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
+  "XPCM11": {
+    "ticker": "XPCM11",
+    "price": 7.94,
+    "name": "XP Corporate Macaé Fundo de Investimento Imobiliário - FII",
+    "type": "FIIS"
+  },
+  "CRFF11": {
+    "ticker": "CRFF11",
+    "price": 74.22,
+    "name": "Caixa Rio Bravo Fundo De Fundos De Investimento Imobiliario II-Cotas",
+    "type": "FIIS"
+  },
+  "HTMX11": {
+    "ticker": "HTMX11",
+    "price": 142,
+    "name": "FD Invest Imob Hotel Maxinvest",
+    "type": "FIIS"
+  },
+  "GEPA4F": {
+    "ticker": "GEPA4F",
+    "price": 33.3,
+    "name": "GER PARANAP PN  ED",
+    "type": "ACOES"
+  },
+  "CMDB11": {
+    "ticker": "CMDB11",
+    "price": 15.39,
+    "name": "Btg Pactual Teva Acoes Commodities Brasil Fundo De Indice",
+    "type": "FIIS"
+  },
+  "KCRE11": {
+    "ticker": "KCRE11",
+    "price": 8.97,
+    "name": "Kinea Creditas Fundo De Investimento Imobiliario - FII",
+    "type": "FIIS"
+  },
+  "IBCR11": {
+    "ticker": "IBCR11",
+    "price": 48.39,
+    "name": "Fundo De Investimento Imobiliario De Cri Integral Brei",
+    "type": "FIIS"
+  },
+  "NCRI11": {
+    "ticker": "NCRI11",
+    "price": 8.89,
+    "name": "Navi Credito Imobiliario - Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
+  "BBAS3": {
+    "ticker": "BBAS3",
+    "price": 21.87,
+    "name": "Banco do Brasil S.A.",
+    "type": "ACOES"
+  },
+  "OCRE11": {
+    "ticker": "OCRE11",
+    "price": 77.98,
+    "name": "Octo Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
+  "GLCR11": {
+    "ticker": "GLCR11",
+    "price": 101.07,
+    "name": "FII GLCR    CI",
+    "type": "FIIS"
+  },
+  "RCRB11": {
+    "ticker": "RCRB11",
+    "price": 142.41,
+    "name": "Fundo de Investimento Imobiliário Rio Bravo Renda Corporativa",
+    "type": "FIIS"
+  },
+  "FMXB34": {
+    "ticker": "FMXB34",
+    "price": 572,
+    "name": "Fomento Económico Mexicano, S.A.B. de C.V.",
+    "type": "ACOES"
+  },
+  "GEPA4": {
+    "ticker": "GEPA4",
+    "price": 32.75,
+    "name": "Rio Paranapanema Energia S.A.",
+    "type": "ACOES"
+  },
+  "CRIP34": {
+    "ticker": "CRIP34",
+    "price": 411,
+    "name": "Trip.com Group Limited",
+    "type": "ACOES"
+  },
+  "MGEL4": {
+    "ticker": "MGEL4",
+    "price": 6.2,
+    "name": "Mangels Industrial S.A.",
+    "type": "ACOES"
+  },
+  "GEPA3": {
+    "ticker": "GEPA3",
+    "price": 32.5,
+    "name": "Rio Paranapanema Energia S.A.",
+    "type": "ACOES"
+  },
+  "CMIG3F": {
+    "ticker": "CMIG3F",
+    "price": 14.25,
+    "name": "CEMIG       ON      N1",
+    "type": "ACOES"
+  },
+  "CMIN3": {
+    "ticker": "CMIN3",
+    "price": 5.83,
+    "name": "CSN Mineração S.A.",
+    "type": "ACOES"
+  },
+  "DCRA11": {
+    "ticker": "DCRA11",
+    "price": 7.22,
+    "name": "Devant Fundo De Investimento Nas Cadeias Produtivas Agroindustriais - Fiagro-Imobiliario",
+    "type": "FIIS"
+  },
+  "VCRI11": {
+    "ticker": "VCRI11",
+    "price": 7.41,
+    "name": "Vinci Credit Securities Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
+  "FLCR11": {
+    "ticker": "FLCR11",
+    "price": 93.3,
+    "name": "Faria Lima Capital Recebiveis Imobiliarios I FII",
+    "type": "FIIS"
+  },
+  "KNCR11": {
+    "ticker": "KNCR11",
+    "price": 105.75,
+    "name": "Kinea Rendimentos Imobiliários Fundo de Investimento Imobiliário - FII",
+    "type": "FIIS"
+  },
+  "CRAA11": {
+    "ticker": "CRAA11",
+    "price": 95.7,
+    "name": "Sparta Fiagro Fundo De Investimento Nas Cadeias Produtivas Agroindustriais - Imobiliario",
+    "type": "FIIS"
+  },
+  "ICRI11": {
+    "ticker": "ICRI11",
+    "price": 91.81,
+    "name": "FII CI IPCA CI  ER",
+    "type": "FIIS"
+  },
+  "CHCM34": {
+    "ticker": "CHCM34",
+    "price": 18.2,
+    "name": "Charter Communications, Inc.",
+    "type": "ACOES"
+  },
+  "RECR11": {
+    "ticker": "RECR11",
+    "price": 81.57,
+    "name": "Fundo Investimento Imobiliario Fii Ubs (Br) Recebveis Imobiliarios",
+    "type": "FIIS"
+  },
+  "GBTC11": {
+    "ticker": "GBTC11",
+    "price": 32.98,
+    "name": "Buena Vista Hashdex Gold & Bitcoin Fundo De Indice - Responsabilidade Limitada",
+    "type": "FIIS"
+  },
+  "BRCR11": {
+    "ticker": "BRCR11",
+    "price": 47.53,
+    "name": "Fundo de Investimento Imobiliário - FII BTG Pactual Corporate Office Fund",
+    "type": "FIIS"
+  },
+  "QBTC11": {
+    "ticker": "QBTC11",
+    "price": 30.96,
+    "name": "Qr Cme Cf Bitcoin Reference Rate Fundo De Indice Investimento No Exterior",
+    "type": "FIIS"
+  },
+  "RECM11": {
+    "ticker": "RECM11",
+    "price": 8.55,
+    "name": "Rec Multiestrategia Fundo De Investimento Imobiliario Responsabilidade Limitada",
+    "type": "FIIS"
   },
   "PETR4": {
     "ticker": "PETR4",
@@ -33,6 +405,90 @@
     "ticker": "PETR3",
     "price": 31.95,
     "name": "Petróleo Brasileiro S.A. - Petrobras",
+    "type": "ACOES"
+  },
+  "IFCM3": {
+    "ticker": "IFCM3",
+    "price": 0.86,
+    "name": "Infracommerce CXaaS S.A.",
+    "type": "ACOES"
+  },
+  "DTCR39": {
+    "ticker": "DTCR39",
+    "price": 62.56,
+    "name": "GX DATAINFRADRE ED",
+    "type": "ACOES"
+  },
+  "WEGE3": {
+    "ticker": "WEGE3",
+    "price": 46.4,
+    "name": "WEG S.A.",
+    "type": "ACOES"
+  },
+  "OBTC3F": {
+    "ticker": "OBTC3F",
+    "price": 9.1,
+    "name": "ORANJEBTC   ON",
+    "type": "ACOES"
+  },
+  "CRPT11": {
+    "ticker": "CRPT11",
+    "price": 18.34,
+    "name": "CRIPTO20 EMPCI",
+    "type": "FIIS"
+  },
+  "JSCR11": {
+    "ticker": "JSCR11",
+    "price": 8.58,
+    "name": "FII JSCR    CI  ER",
+    "type": "FIIS"
+  },
+  "BBDC4F": {
+    "ticker": "BBDC4F",
+    "price": 18.18,
+    "name": "BRADESCO    PN  EJ  N1",
+    "type": "ACOES"
+  },
+  "IFCM3F": {
+    "ticker": "IFCM3F",
+    "price": 0.87,
+    "name": "INFRACOMM   ON      NM",
+    "type": "ACOES"
+  },
+  "PETR4F": {
+    "ticker": "PETR4F",
+    "price": 30.4,
+    "name": "PETROBRAS   PN      N2",
+    "type": "ACOES"
+  },
+  "CMIN3F": {
+    "ticker": "CMIN3F",
+    "price": 5.83,
+    "name": "CSNMINERACAOON  EDJ N2",
+    "type": "ACOES"
+  },
+  "CMIG4": {
+    "ticker": "CMIG4",
+    "price": 10.74,
+    "name": "Companhia Energética de Minas Gerais - CEMIG",
+    "type": "ACOES"
+  },
+  "WEGE3F": {
+    "ticker": "WEGE3F",
+    "price": 46.5,
+    "name": "WEG         ON      NM",
+    "type": "ACOES"
+  },
+  "MGEL4F": {
+    "ticker": "MGEL4F",
+    "price": 6.09,
+    "name": "MANGELS INDLPN",
+    "type": "ACOES"
+  },
+  "CMIG3": {
+    "ticker": "CMIG3",
+    "price": 14.1,
+    "name": "Companhia Energética de Minas Gerais - CEMIG",
     "type": "ACOES"
   }
 }

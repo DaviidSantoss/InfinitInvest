@@ -132,6 +132,8 @@ public class GraficoAtivos {
 
 			// ✅ garante que as cores continuem certas depois do update
 			aplicarCoresDepoisDoRender();
+			aplicarCorLabelsGrafico(Color.web("#424242"));
+
 		});
 	}
 
@@ -163,4 +165,13 @@ public class GraficoAtivos {
 			return "#999999";
 		return COR_POR_CATEGORIA.getOrDefault(categoria.trim(), "#999999");
 	}
+
+	private void aplicarCorLabelsGrafico(Color cor) {
+		String css = String.format("-fx-fill: rgb(%d,%d,%d); -fx-font-weight: bold;", (int) (cor.getRed() * 255), (int) (cor.getGreen() * 255), (int) (cor.getBlue() * 255));
+
+		grafico.lookupAll(".chart-pie-label").forEach(n -> n.setStyle(css));
+	}
+
+
+
 }

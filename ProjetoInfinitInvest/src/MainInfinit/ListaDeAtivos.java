@@ -38,13 +38,13 @@ public class ListaDeAtivos extends VBox {
 	private final Map<String, CategoriaPane> categorias = new HashMap<>();
 
 	private static final double ALTURA_LINHA = 70;
-	private static final double LARGURA_COLUNA = 200;
+	private static final double LARGURA_COLUNA = 170;
 	private static final double ESPACAMENTO_COLUNAS = 40;
 
 	private static final double ESPACO_BASE = 5;
 	private static final double DURACAO_ANIM = 120;
 
-	private final double LARGURA_TOTAL = 6 * LARGURA_COLUNA + (ESPACAMENTO_COLUNAS * 5) + 120;
+	private final double LARGURA_TOTAL = 7 * LARGURA_COLUNA + (ESPACAMENTO_COLUNAS * 6) + 120;
 
 	private static final NumberFormat CRYPTO_CURRENCY = NumberFormat.getCurrencyInstance();
 	static {
@@ -81,10 +81,13 @@ public class ListaDeAtivos extends VBox {
 	// ========================================================
 
 	public void adicionarAcoesEFiis(String categoria, String ticker, String logoUrl, double quantidade, double precoMedio, double precoAtual, double variacaoPercent, double saldo) {
-		getOuCriarCategoria(categoria).adicionarLinhaAcoesEFiis(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacaoPercent, saldo);
+
+		getOuCriarCategoria(categoria).adicionarLinhaAcoesEFiis(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacaoPercent, 0.0, saldo);
 	}
 
-	public void atualizarOuAdicionarAtivo(String categoria, String ticker, String logoUrl, double quantidade, double precoMedio, double precoAtual, double variacaoPercent, double saldo) {
+
+	public void atualizarOuAdicionarAtivo(String categoria, String ticker, String logoUrl, double quantidade, double precoMedio, double precoAtual, double variacaoPercent, double rendimentoMensal,
+			double saldo) {
 
 		String cat = (categoria == null ? "" : categoria.trim());
 
@@ -101,8 +104,9 @@ public class ListaDeAtivos extends VBox {
 			return;
 		}
 
-		getOuCriarCategoria(cat).atualizarOuAdicionarLinha(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacaoPercent, saldo);
+		getOuCriarCategoria(cat).atualizarOuAdicionarLinha(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacaoPercent, rendimentoMensal, saldo);
 	}
+
 
 	// ========================================================
 	// CRIPTOMOEDAS
@@ -285,8 +289,9 @@ public class ListaDeAtivos extends VBox {
 			} else if ("Tesouro Direto".equalsIgnoreCase(titulo)) {
 				colunas = Arrays.asList("Ativo", "Quantidade", "Variação", "Saldo");
 			} else {
-				colunas = Arrays.asList("Ativo", "Quantidade", "Preço Médio", "Preço Atual", "Variação", "Saldo");
+				colunas = Arrays.asList("Ativo", "Quantidade", "Preço Médio", "Preço Atual", "Variação", "Rendimento Mensal", "Saldo");
 			}
+
 
 			HBox linha = new HBox(ESPACAMENTO_COLUNAS);
 			linha.setAlignment(Pos.CENTER_LEFT);
@@ -307,11 +312,16 @@ public class ListaDeAtivos extends VBox {
 		// Ações / FIIs / ETFs
 		// ====================================================
 
-		public void adicionarLinhaAcoesEFiis(String logoUrl, String ticker, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo) {
-			listaAtivos.getChildren().add(criarLinhaAtivo(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacao, saldo));
+		public void adicionarLinhaAcoesEFiis(String logoUrl, String ticker, double quantidade, double precoMedio, double precoAtual, double variacao, double rendimentoMensal, double saldo) {
+
+			listaAtivos.getChildren().add(criarLinhaAtivo(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacao, rendimentoMensal, saldo));
 		}
 
-		public void atualizarOuAdicionarLinha(String logoUrl, String ticker, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo) {
+
+		public void atualizarOuAdicionarLinha(
+		        String logoUrl, String ticker,
+		        double quantidade, double precoMedio, double precoAtual,
+				double variacao, double rendimentoMensal, double saldo) {
 			for (var node : listaAtivos.getChildren()) {
 				if (node instanceof GridPane grid) {
 					String id = grid.getId();
@@ -326,12 +336,13 @@ public class ListaDeAtivos extends VBox {
 							ld.lblPreco.setText(formatCurrency(precoAtual));
 							ld.lblVariacao.setText(formatVariacao(variacao));
 							ld.lblSaldo.setText(formatCurrency(saldo));
+							ld.lblRendMensal.setText(formatPercent(rendimentoMensal));
 							return;
 						}
 					}
 				}
 			}
-			adicionarLinhaAcoesEFiis(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacao, saldo);
+			adicionarLinhaAcoesEFiis(logoUrl, ticker, quantidade, precoMedio, precoAtual, variacao, rendimentoMensal, saldo);
 		}
 
 		// ====================================================
@@ -399,7 +410,8 @@ public class ListaDeAtivos extends VBox {
 			GridPane grid = new GridPane();
 			grid.setStyle("-fx-background-color: #2a2b2d; -fx-background-radius: 6;");
 			grid.setPadding(new Insets(ALTURA_LINHA / 3, 35, ALTURA_LINHA / 3, 35));
-			grid.setHgap(45);
+			grid.setHgap(ESPACAMENTO_COLUNAS);
+
 			grid.setPrefWidth(LARGURA_TOTAL);
 			grid.setMaxWidth(LARGURA_TOTAL);
 			grid.setId(ticker);
@@ -442,7 +454,8 @@ public class ListaDeAtivos extends VBox {
 			GridPane grid = new GridPane();
 			grid.setStyle("-fx-background-color: #2a2b2d; -fx-background-radius: 6;");
 			grid.setPadding(new Insets(ALTURA_LINHA / 3, 35, ALTURA_LINHA / 3, 35));
-			grid.setHgap(45);
+			grid.setHgap(ESPACAMENTO_COLUNAS);
+
 			grid.setPrefWidth(LARGURA_TOTAL);
 			grid.setMaxWidth(LARGURA_TOTAL);
 			grid.setId(nomeAtivo);
@@ -470,19 +483,20 @@ public class ListaDeAtivos extends VBox {
 			return grid;
 		}
 
-		private GridPane criarLinhaAtivo(String logoUrl, String ticker, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo) {
+		private GridPane criarLinhaAtivo(String logoUrl, String ticker, double quantidade, double precoMedio, double precoAtual, double variacao, double rendimentoMensal, double saldo) {
 
 			GridPane grid = new GridPane();
 			grid.setStyle("-fx-background-color: #2a2b2d; -fx-background-radius: 6;");
 			grid.setPadding(new Insets(ALTURA_LINHA / 3, 35, ALTURA_LINHA / 3, 35));
-			grid.setHgap(45);
+			grid.setHgap(ESPACAMENTO_COLUNAS);
 			grid.setPrefWidth(LARGURA_TOTAL);
 			grid.setMaxWidth(LARGURA_TOTAL);
 			grid.setId(ticker);
 
-			for (int i = 0; i < 6; i++) {
+			for (int i = 0; i < 7; i++) {
 				grid.getColumnConstraints().add(new ColumnConstraints(LARGURA_COLUNA));
 			}
+
 
 			HBox ativoBox = new HBox(10);
 			ativoBox.setAlignment(Pos.CENTER_LEFT);
@@ -558,19 +572,22 @@ public class ListaDeAtivos extends VBox {
 			Label lPM = novoLabel(formatCurrency(precoMedio));
 			Label lPreco = novoLabel(formatCurrency(precoAtual));
 			Label lVar = novoLabel(formatVariacao(variacao));
+			Label lRendMensal = novoLabel(formatCurrency(rendimentoMensal));
 			Label lSaldo = novoLabel(formatCurrency(saldo));
 
 			grid.add(lQtd, 1, 0);
 			grid.add(lPM, 2, 0);
 			grid.add(lPreco, 3, 0);
 			grid.add(lVar, 4, 0);
-			grid.add(lSaldo, 5, 0);
+			grid.add(lRendMensal, 5, 0);
+			grid.add(lSaldo, 6, 0);
 
 			LineData ld = new LineData();
 			ld.lblQtd = lQtd;
 			ld.lblPM = lPM;
 			ld.lblPreco = lPreco;
 			ld.lblVariacao = lVar;
+			ld.lblRendMensal = lRendMensal;
 			ld.lblSaldo = lSaldo;
 			ld.quantidade = quantidade;
 			ld.precoReferencia = precoMedio;
@@ -587,7 +604,7 @@ public class ListaDeAtivos extends VBox {
 			grid.setId(nomeAtivo);
 			grid.setStyle("-fx-background-color: #2a2b2d; -fx-background-radius: 6;");
 			grid.setPadding(new Insets(ALTURA_LINHA / 3, 35, ALTURA_LINHA / 3, 35));
-			grid.setHgap(45);
+			grid.setHgap(ESPACAMENTO_COLUNAS);
 			grid.setPrefWidth(LARGURA_TOTAL);
 			grid.setMaxWidth(LARGURA_TOTAL);
 
@@ -659,6 +676,7 @@ public class ListaDeAtivos extends VBox {
 		Label lblPreco;
 		Label lblVariacao;
 		Label lblSaldo;
+		Label lblRendMensal;
 
 		double quantidade;
 		double precoReferencia;
@@ -726,4 +744,11 @@ public class ListaDeAtivos extends VBox {
 	    if (c.getOpacity() < alphaMin) return true; // transparente conta como "vazio"
 	    return c.getRed() >= white && c.getGreen() >= white && c.getBlue() >= white;
 	}
+
+	private static String formatPercent(double v) {
+		// v já é "1.23" significando 1,23%
+		String formatted = String.format(Locale.forLanguageTag("pt-BR"), "%.2f", v).replace('.', ',');
+		return formatted + "%";
+	}
+
 }
