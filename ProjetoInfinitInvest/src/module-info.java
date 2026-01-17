@@ -20,12 +20,15 @@ module ProjetoInfinitInvest {
 	requires java.base;
 	requires com.github.benmanes.caffeine;
 	requires javafx.swing;
+	requires jdk.jsobject;
+
 
 	opens LoginInfinit;
 	opens BancoInfinit;
 	opens MainInfinit to javafx.graphics;
 	opens Apis;
 	opens ControllerInfinit;
+
 	
 
 }

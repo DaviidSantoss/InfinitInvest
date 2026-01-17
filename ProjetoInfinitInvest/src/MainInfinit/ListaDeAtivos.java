@@ -31,6 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+
 public class ListaDeAtivos extends VBox {
 
 	private static final ExecutorService LOGO_EXEC = Executors.newFixedThreadPool(4);

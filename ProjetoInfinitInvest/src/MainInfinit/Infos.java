@@ -341,6 +341,7 @@ public class Infos extends StackPane {
 		}, 0, 10, TimeUnit.SECONDS); // 10s fica bem “vivo”
 	}
 
+	@SuppressWarnings("deprecation")
 	private static final Locale LOCALE_BR = new Locale("pt", "BR");
 	private static final NumberFormat MOEDA = NumberFormat.getCurrencyInstance(LOCALE_BR);
 	private static final NumberFormat PCT = NumberFormat.getPercentInstance(LOCALE_BR);
