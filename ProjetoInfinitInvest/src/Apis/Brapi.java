@@ -44,6 +44,7 @@ public class Brapi {
 	private static final int READ_TIMEOUT = 3000;
 	private static final int MAX_CANDIDATES = 40;
 
+	@SuppressWarnings("resource")
 	private static final ExecutorService DETAIL_EXECUTOR = Executors.newFixedThreadPool(10);
 
 	@SuppressWarnings("unused")
@@ -134,6 +135,7 @@ public class Brapi {
 	// =============================================
 
 
+	@SuppressWarnings("resource")
 	private static List<String> buscarCripto(String query) {
 		List<String> out = new ArrayList<>();
 		try {
@@ -275,6 +277,7 @@ public class Brapi {
 	// DIVIDENDOS / RENDA (12M)
 	// ===============================
 	public static double buscarDividendYieldMensal12mPercent(String tickerB3, double precoAtual) {
+
 		try {
 			if (tickerB3 == null || tickerB3.isBlank() || precoAtual <= 0)
 				return 0.0;
@@ -290,7 +293,7 @@ public class Brapi {
 
 			// 2) resolve símbolo EODHD (ex: PETR4.SA) — aqui vou usar heurística
 			// Se você quiser "100% correto", abaixo eu te deixo uma versão com Search API.
-			String symbol = toEodhdSymbol(t); // ex: "PETR4.SA"
+			String symbol = toEodhdSymbol(t);
 
 			// 3) busca dividendos (últimos 12 meses)
 			LocalDate hoje = LocalDate.now();

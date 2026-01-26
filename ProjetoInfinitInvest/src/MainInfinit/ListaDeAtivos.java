@@ -34,6 +34,7 @@ import javafx.util.Duration;
 
 public class ListaDeAtivos extends VBox {
 
+	@SuppressWarnings("resource")
 	private static final ExecutorService LOGO_EXEC = Executors.newFixedThreadPool(4);
 
 	private final Map<String, CategoriaPane> categorias = new HashMap<>();

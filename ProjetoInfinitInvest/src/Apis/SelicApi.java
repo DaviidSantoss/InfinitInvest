@@ -16,6 +16,7 @@ public class SelicApi {
 	// Pegando só o último valor para evitar retorno grande / regra pós-26/03/2025
 	private static final String URL_ULTIMO = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/1?formato=json";
 
+	@SuppressWarnings("resource")
 	private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
 	private final Gson gson = new Gson();

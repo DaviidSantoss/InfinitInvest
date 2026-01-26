@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 public class SessaoDAO {
 
+	@SuppressWarnings("resource")
 	private static Connection conn;
 
 	public SessaoDAO() throws IOException, SQLException {
@@ -43,6 +44,7 @@ public class SessaoDAO {
 	// =======================
 	// Método para Buscar usuário logado
 	// =======================
+	@SuppressWarnings("resource")
 	public static Integer buscarSessao() throws SQLException {
 		String selectSql = "SELECT usuario_id FROM sessao LIMIT 1";
 		try (PreparedStatement ps = conn.prepareStatement(selectSql)) {
@@ -77,6 +79,7 @@ public class SessaoDAO {
 
 		// Mantém o usuário autenticado apenas em memória
 		private static volatile Usuario usuarioLogado;
+		private static volatile Integer usuarioId;
 
 		private SessaoTemp() {
 		}
@@ -84,6 +87,12 @@ public class SessaoDAO {
 		/** Define o usuário logado para a sessão atual (memória). */
 		public static void setUsuarioLogado(Usuario usuario) {
 			SessaoTemp.usuarioLogado = usuario;
+			SessaoTemp.usuarioId = (usuario != null ? usuario.getId() : null);
+		}
+
+
+		public static void setUsuarioId(Integer id) {
+			SessaoTemp.usuarioId = id;
 		}
 
 		/** Retorna o usuário logado (ou null se não houver). */
@@ -93,8 +102,11 @@ public class SessaoDAO {
 
 		/** Retorna o ID do usuário logado (ou null se não houver). */
 		public static Integer getUsuarioId() {
-			return (usuarioLogado != null) ? usuarioLogado.getId() : null;
+			if (usuarioLogado != null)
+				return usuarioLogado.getId();
+			return usuarioId;
 		}
+
 
 		/** Diz se existe sessão ativa em memória. */
 		public static boolean isAtiva() {
@@ -104,7 +116,9 @@ public class SessaoDAO {
 		/** Limpa a sessão em memória (use no logout). */
 		public static void limpar() {
 			usuarioLogado = null;
+			usuarioId = null;
 		}
+
 	}
 
 }

@@ -25,6 +25,16 @@ public class Ativo {
 	private double tdTaxaAnual; // ex: 0.1188
 	private double tdPrincipal; // base
 	private String tdUltimoDia; // "2026-01-08"
+	// ===== Renda Fixa (NOVO - meta de atualização diária) =====
+	private String rfIndexador; // "CDI", "CDI+", "IPCA+"
+	private String rfForma; // "pré-fixado", "pós-fixado" (ou "PRE"/"POS"/"HIBRIDO")
+	private double rfTaxaAnual; // ex: 0.155 (15,5% a.a.) OU taxa real do IPCA+
+	private double rfPrincipal; // total aportado (base)
+	private String rfUltimoDia; // "2026-01-22"
+
+	// opcionais (CDI+ bem feito)
+	private double rfPercentIndexador; // ex: 1.00 (100% CDI)
+	private double rfSpreadAnual; // ex: 0.02 (2% a.a.)
 
 	// Construtor antigo continua existindo (pra não quebrar)
 	public Ativo(int id, int usuarioId, String categoria, String ativo, String iconUrl, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo) {
@@ -57,6 +67,27 @@ public class Ativo {
 		this.tdTaxaAnual = tdTaxaAnual;
 		this.tdPrincipal = tdPrincipal;
 		this.tdUltimoDia = tdUltimoDia;
+	}
+
+	// Construtor NOVO (com campos da Renda Fixa meta)
+	public Ativo(int id, int usuarioId, String categoria, String ativo, String iconUrl, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo, String tdIndexador,
+			double tdTaxaAnual, double tdPrincipal, String tdUltimoDia, String rfIndexador, String rfForma, double rfTaxaAnual, double rfPrincipal, String rfUltimoDia, double rfPercentIndexador,
+			double rfSpreadAnual) {
+		this(id, usuarioId, categoria, ativo, iconUrl, quantidade, precoMedio, precoAtual, variacao, saldo);
+
+		this.tdIndexador = tdIndexador;
+		this.tdTaxaAnual = tdTaxaAnual;
+		this.tdPrincipal = tdPrincipal;
+		this.tdUltimoDia = tdUltimoDia;
+
+		this.rfIndexador = rfIndexador;
+		this.rfForma = rfForma;
+		this.rfTaxaAnual = rfTaxaAnual;
+		this.rfPrincipal = rfPrincipal;
+		this.rfUltimoDia = rfUltimoDia;
+
+		this.rfPercentIndexador = rfPercentIndexador;
+		this.rfSpreadAnual = rfSpreadAnual;
 	}
 
 	// ===== getters existentes =====
@@ -133,4 +164,33 @@ public class Ativo {
 	public void setTdUltimoDia(String v) {
 		this.tdUltimoDia = v;
 	}
+
+	public String getRfIndexador() {
+		return rfIndexador;
+	}
+
+	public String getRfForma() {
+		return rfForma;
+	}
+
+	public double getRfTaxaAnual() {
+		return rfTaxaAnual;
+	}
+
+	public double getRfPrincipal() {
+		return rfPrincipal;
+	}
+
+	public String getRfUltimoDia() {
+		return rfUltimoDia;
+	}
+
+	public double getRfPercentIndexador() {
+		return rfPercentIndexador;
+	}
+
+	public double getRfSpreadAnual() {
+		return rfSpreadAnual;
+	}
+
 }

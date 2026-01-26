@@ -126,7 +126,7 @@ public class NovaSenha extends BorderPane {
 
 		cofirmar.setPrefWidth(270);
 		cofirmar.setPrefHeight(30);
-		cofirmar.getStyleClass().add("botao-login");
+		cofirmar.getStyleClass().add("botao");
 
 		cofirmar.setOnMouseClicked(e -> {
 

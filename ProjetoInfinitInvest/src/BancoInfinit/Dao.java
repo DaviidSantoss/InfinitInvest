@@ -100,6 +100,7 @@ public class Dao {
 	// ====================
 	// Obter foto de perfil
 	// ====================
+	@SuppressWarnings("resource")
 	public byte[] getImagem(int usuarioId) {
 		String sql = "SELECT fotoPerfil FROM usuarios WHERE id = ?";
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -135,6 +136,7 @@ public class Dao {
 	// ====================
 	// Buscar usuário por email
 	// ====================
+	@SuppressWarnings("resource")
 	public static Usuario buscarPorEmail(String email) {
 		String sql = "SELECT * FROM usuarios WHERE LOWER(email) = LOWER(?)";
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -167,6 +169,7 @@ public class Dao {
         }
     }
 
+	@SuppressWarnings("resource")
 	public static Usuario buscarPorId(int id) throws SQLException {
 		String sql = "SELECT * FROM usuarios WHERE id = ?";
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -185,6 +188,7 @@ public class Dao {
 		return null;
 	}
 
+	@SuppressWarnings("resource")
 	public boolean emailExiste(String email) {
 		String sql = "SELECT COUNT(*) FROM usuarios WHERE email = ?";
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -236,12 +240,17 @@ public class Dao {
 
 	public List<Ativo> listarAtivosUsuario(int usuarioId) {
 		List<Ativo> ativos = new ArrayList<>();
+
 		String sql = """
 				SELECT
 				  id, usuario_id, categoria, ativo,
 				  iconUrl,
 				  quantidade, preco_medio, preco_atual, variacao, saldo,
-				  td_indexador, td_taxa_anual, td_principal, td_ultimo_dia
+
+				  td_indexador, td_taxa_anual, td_principal, td_ultimo_dia,
+
+				  rf_indexador, rf_forma, rf_taxa_anual, rf_principal, rf_ultimo_dia,
+				  rf_percent_indexador, rf_spread_anual
 				FROM ativos
 				WHERE usuario_id = ?
 				""";
@@ -261,6 +270,7 @@ public class Dao {
 
 		return ativos;
 	}
+
 
 
 
@@ -357,6 +367,31 @@ public class Dao {
 			if (!colunaExiste(conn, "ativos", "td_ultimo_dia")) {
 				stmt.execute("ALTER TABLE ativos ADD COLUMN td_ultimo_dia TEXT;");
 			}
+			// rf_*
+			if (!colunaExiste(conn, "ativos", "rf_ultimo_dia")) {
+				stmt.execute("ALTER TABLE ativos ADD COLUMN rf_ultimo_dia TEXT;");
+			}
+			if (!colunaExiste(conn, "ativos", "rf_indexador")) {
+				stmt.execute("ALTER TABLE ativos ADD COLUMN rf_indexador TEXT;");
+			}
+			if (!colunaExiste(conn, "ativos", "rf_forma")) {
+				stmt.execute("ALTER TABLE ativos ADD COLUMN rf_forma TEXT;");
+			}
+			if (!colunaExiste(conn, "ativos", "rf_taxa_anual")) {
+				stmt.execute("ALTER TABLE ativos ADD COLUMN rf_taxa_anual REAL;");
+			}
+			if (!colunaExiste(conn, "ativos", "rf_principal")) {
+				stmt.execute("ALTER TABLE ativos ADD COLUMN rf_principal REAL;");
+			}
+
+			// opcionais (recomendado para CDI+ certo)
+			if (!colunaExiste(conn, "ativos", "rf_percent_indexador")) {
+				stmt.execute("ALTER TABLE ativos ADD COLUMN rf_percent_indexador REAL;");
+			}
+			if (!colunaExiste(conn, "ativos", "rf_spread_anual")) {
+				stmt.execute("ALTER TABLE ativos ADD COLUMN rf_spread_anual REAL;");
+			}
+
 			if (!colunaExiste(conn, "ativos", "td_indexador")) {
 				stmt.execute("ALTER TABLE ativos ADD COLUMN td_indexador TEXT;");
 			}
@@ -386,6 +421,33 @@ public class Dao {
 			stmt.setDouble(3, principal);
 			stmt.setString(4, ultimoDiaIso);
 			stmt.setInt(5, id);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void atualizarCamposRendaFixaMeta(int id, String indexador, String forma, double taxaAnual, double principal, String ultimoDiaIso) {
+		String sql = """
+				    UPDATE ativos
+				       SET rf_indexador = ?,
+				           rf_forma = ?,
+				           rf_taxa_anual = ?,
+				           rf_principal = ?,
+				           rf_ultimo_dia = ?
+				     WHERE id = ?
+				""";
+
+		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, indexador);
+			stmt.setString(2, forma);
+			stmt.setDouble(3, taxaAnual);
+			stmt.setDouble(4, principal);
+			stmt.setString(5, ultimoDiaIso);
+			stmt.setInt(6, id);
+
 			stmt.executeUpdate();
 
 		} catch (SQLException e) {
@@ -426,7 +488,9 @@ public class Dao {
 				  id, usuario_id, categoria, ativo,
 				  iconUrl,
 				  quantidade, preco_medio, preco_atual, variacao, saldo,
-				  td_indexador, td_taxa_anual, td_principal, td_ultimo_dia
+				  td_indexador, td_taxa_anual, td_principal, td_ultimo_dia,
+				  rf_indexador, rf_forma, rf_taxa_anual, rf_principal, rf_ultimo_dia,
+				  rf_percent_indexador, rf_spread_anual
 				FROM ativos
 				WHERE usuario_id = ?
 				""";
@@ -434,15 +498,12 @@ public class Dao {
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, usuarioId);
-			ResultSet rs = stmt.executeQuery();
 
-			while (rs.next()) {
-				Ativo a = new Ativo(rs.getInt("id"), rs.getInt("usuario_id"), rs.getString("categoria"), rs.getString("ativo"), rs.getString("iconUrl"), rs.getDouble("quantidade"),
-						rs.getDouble("preco_medio"), rs.getDouble("preco_atual"), rs.getDouble("variacao"), rs.getDouble("saldo"), rs.getString("td_indexador"), rs.getDouble("td_taxa_anual"),
-						rs.getDouble("td_principal"), rs.getString("td_ultimo_dia"));
-				ativos.add(a); // <<< ESSENCIAL
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					ativos.add(mapAtivo(rs)); // ✅ AGORA VEM RF COMPLETO
+				}
 			}
-
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -450,6 +511,7 @@ public class Dao {
 
 		return ativos;
 	}
+
 
 
 	public Ativo buscarAtivoPorUsuarioECategoria(int usuarioId, String ativo, String categoria) {
@@ -489,11 +551,16 @@ public class Dao {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private static Ativo mapAtivo(ResultSet rs) throws SQLException {
 		return new Ativo(rs.getInt("id"), rs.getInt("usuario_id"), rs.getString("categoria"), rs.getString("ativo"), rs.getString("iconUrl"), rs.getDouble("quantidade"), rs.getDouble("preco_medio"),
-				rs.getDouble("preco_atual"), rs.getDouble("variacao"), rs.getDouble("saldo"), rs.getString("td_indexador"), rs.getDouble("td_taxa_anual"), rs.getDouble("td_principal"),
-				rs.getString("td_ultimo_dia"));
+				rs.getDouble("preco_atual"), rs.getDouble("variacao"), rs.getDouble("saldo"),
+
+				rs.getString("td_indexador"), rs.getDouble("td_taxa_anual"), rs.getDouble("td_principal"), rs.getString("td_ultimo_dia"),
+
+				rs.getString("rf_indexador"), rs.getString("rf_forma"), rs.getDouble("rf_taxa_anual"), rs.getDouble("rf_principal"), rs.getString("rf_ultimo_dia"),
+
+				rs.getDouble("rf_percent_indexador"), rs.getDouble("rf_spread_anual"));
+
 	}
 
 
@@ -548,6 +615,7 @@ public class Dao {
 	}
 
 	// Dao.java
+	@SuppressWarnings("resource")
 	public java.util.Map<String, Double> obterTotaisPorCategoria(int usuarioId) {
 		java.util.Map<String, Double> out = new java.util.HashMap<>();
 
@@ -712,6 +780,67 @@ public class Dao {
 		}
 	}
 
+	public void somarPrincipalRendaFixaETocarUltimoDiaPorNome(int usuarioId, String nomeAtivo, String indexador, String forma, double taxaAnual, double aporte, String ultimoDiaIso) {
+		String sql = """
+				    UPDATE ativos
+				       SET rf_indexador = ?,
+				           rf_forma = ?,
+				           rf_taxa_anual = ?,
+				           rf_principal = COALESCE(rf_principal, 0) + ?,
+				           rf_ultimo_dia = ?
+				     WHERE usuario_id = ?
+				       AND categoria  = 'Renda Fixa'
+				       AND ativo      = ?
+				""";
+
+		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, indexador);
+			stmt.setString(2, forma);
+			stmt.setDouble(3, taxaAnual);
+			stmt.setDouble(4, aporte);
+			stmt.setString(5, ultimoDiaIso);
+			stmt.setInt(6, usuarioId);
+			stmt.setString(7, nomeAtivo);
+
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void atualizarCamposRendaFixaMetaPorNome(int usuarioId, String nomeAtivo, String indexador, String forma, double taxaAnual, double principal, String ultimoDiaIso) {
+		String sql = """
+				    UPDATE ativos
+				       SET rf_indexador = ?,
+				           rf_forma = ?,
+				           rf_taxa_anual = ?,
+				           rf_principal = ?,
+				           rf_ultimo_dia = ?
+				     WHERE usuario_id = ?
+				       AND categoria  = 'Renda Fixa'
+				       AND ativo      = ?
+				""";
+
+		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, indexador);
+			stmt.setString(2, forma);
+			stmt.setDouble(3, taxaAnual);
+			stmt.setDouble(4, principal);
+			stmt.setString(5, ultimoDiaIso);
+			stmt.setInt(6, usuarioId);
+			stmt.setString(7, nomeAtivo);
+
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("resource")
 	public String carregarAnotacoes(int usuarioId) {
 		String sql = "SELECT conteudo FROM anotacoes WHERE usuario_id = ?";
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {

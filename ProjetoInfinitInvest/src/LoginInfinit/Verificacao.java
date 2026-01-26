@@ -96,7 +96,7 @@ public class Verificacao extends BorderPane {
 		// ====================
 		// Botão.
 		// ====================
-		confirmar.getStyleClass().add("botao-login");
+		confirmar.getStyleClass().add("botao");
 		confirmar.setStyle("-fx-padding: 10px 50px; ");
 
 		// ====================

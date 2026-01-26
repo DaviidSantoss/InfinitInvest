@@ -116,7 +116,7 @@ public class CadastroLogin extends GridPane {
 		
 
 		Button login = new Button("Login");
-		login.getStyleClass().add("botao-login");
+		login.getStyleClass().add("botao");
 		login.setPrefWidth(270);
 		login.setPrefHeight(30);
 

@@ -47,6 +47,7 @@ public class Infos extends StackPane {
 	private ListaDeAtivos listaDeAtivos = new ListaDeAtivos();
 
 	private final GraficoAtivos graficoAtivos = new GraficoAtivos();
+	@SuppressWarnings("resource")
 	private final ScheduledExecutorService graficoScheduler = Executors.newSingleThreadScheduledExecutor();
 
 
@@ -282,7 +283,7 @@ public class Infos extends StackPane {
 
 		AddInit.setPrefWidth(200);
 		AddInit.setPrefHeight(30);
-		AddInit.getStyleClass().add("botao-login");
+		AddInit.getStyleClass().add("botao");
 
 		StackPane botaoAtivos = new StackPane(AddInit);
 		botaoAtivos.setAlignment(Pos.CENTER_RIGHT);

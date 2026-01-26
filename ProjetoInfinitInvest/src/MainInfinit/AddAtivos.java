@@ -142,8 +142,8 @@ public class AddAtivos extends StackPane {
 		compraBtn.setPrefWidth(280);
 		vendaBtn.setPrefWidth(280);
 
-		compraBtn.getStyleClass().add("botao-dialog");
-		vendaBtn.getStyleClass().add("botao-dialog");
+		compraBtn.getStyleClass().add("botao");
+		vendaBtn.getStyleClass().add("botao");
 
 		ToggleGroup tg = new ToggleGroup();
 		compraBtn.setToggleGroup(tg);
@@ -207,7 +207,7 @@ public class AddAtivos extends StackPane {
 		Label precoLabel = new Label("Valor em R$");
 		precoLabel.getStyleClass().add("form-label");
 
-		precoField.getStyleClass().add("text-field");
+		precoField.getStyleClass().add("combo-box");
 		precoField.setMinHeight(40);
 		precoField.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(precoField, Priority.ALWAYS);
@@ -215,7 +215,7 @@ public class AddAtivos extends StackPane {
 		Label qtdLabel = new Label("Quantidade");
 		qtdLabel.getStyleClass().add("form-label");
 
-		qtdField.getStyleClass().add("text-field");
+		qtdField.getStyleClass().add("combo-box");
 		qtdField.setMinHeight(40);
 		qtdField.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(qtdField, Priority.ALWAYS);
@@ -230,7 +230,7 @@ public class AddAtivos extends StackPane {
 		emissorLabel.getStyleClass().add("form-label");
 
 		this.emissorField = new TextField();
-		emissorField.getStyleClass().add("text-field");
+		emissorField.getStyleClass().add("combo-box");
 		emissorField.setMinHeight(40);
 		emissorField.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(emissorField, Priority.ALWAYS);
@@ -267,7 +267,7 @@ public class AddAtivos extends StackPane {
 		taxaLabel.getStyleClass().add("form-label");
 
 		this.taxaField = new TextField("0,00%");
-		taxaField.getStyleClass().add("text-field");
+		taxaField.getStyleClass().add("combo-box");
 		taxaField.setMinHeight(40);
 		taxaField.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(taxaField, Priority.ALWAYS);
@@ -296,7 +296,7 @@ public class AddAtivos extends StackPane {
 		// 6) BOTTOM BAR
 		// -----------------------------------------------------------------------
 
-		AdicionarAtivios.getStyleClass().add("botao-dialog");
+		AdicionarAtivios.getStyleClass().add("botao");
 
 		HBox bottomBar = new HBox();
 		bottomBar.setPadding(new Insets(0, 16, 10, 0));

@@ -127,7 +127,7 @@ public class LoginForm extends VBox {
 
 		logar.setPrefWidth(270);
 		logar.setPrefHeight(30);
-		logar.getStyleClass().add("botao-login");
+		logar.getStyleClass().add("botao");
 
 		VBox Butao = new VBox(logar, vcadastro);
 		Butao.setAlignment(Pos.CENTER);

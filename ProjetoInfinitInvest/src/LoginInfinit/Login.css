@@ -1,27 +1,6 @@
-.botao-lateral, .botao-lateral-selecionado {
-    -fx-font-size: 28px;
-    -fx-padding: 10px 20px;
-    -fx-cursor: hand;
-    -fx-font-family: 'Open Sans';
-    -fx-min-width: 300px;
-    -fx-pref-width: 300px;
-    -fx-max-width: 300px;
-    -fx-pref-height: 60px;
-    -fx-max-height: 60px;
-    -fx-min-height: 60px; 
-    -fx-alignment: center-left;
-}
-
-.botao-lateral {
-    -fx-background-color: #333333;
-    -fx-text-fill: white;
-}
-
-.botao-lateral-selecionado {
-    -fx-background-color: #E0E0E0;
-    -fx-text-fill: black;
-}
-
+/* =========================================================
+   TIPOGRAFIA / LABELS
+   ========================================================= */
 .labels {
     -fx-text-fill: white;
     -fx-font-size: 22px;
@@ -40,155 +19,205 @@
     -fx-font-size: 15px;
 }
 
-.campo-transparente {
-    -fx-background-color: transparent;     
-    -fx-border-color: grey;                 
-    -fx-border-width: 0 0 1px 0;              
-    -fx-prompt-text-fill: #999999;             
-    -fx-text-fill: white;      
-    -fx-font-size: 22px;               
-}
-
-.campo-transparente:focused {
-    -fx-border-color: black;                 
-    -fx-border-width: 0 0 2px 0;               
-}
-
-/* BOTÃO DIALOG */
-.botao-dialog {
-    -fx-background-radius: 20px;
-    -fx-background-color: #3D3D3D;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 10px 20px;
-    -fx-cursor: hand;
-    -fx-font-family: 'Open Sans';
-}
-
-.botao-dialog:hover {
-    -fx-background-color: #424242;
-}
-
-.botao-dialog:pressed {
-    -fx-background-color: #000000;
-}
-
-.botao-dialog:selected {
-    -fx-background-color: #5A5A5A;
-}
-
-/* BOTÃO LOGIN */
-.botao-login {
-    -fx-background-radius: 20px;
-    -fx-background-color: #3D3D3D;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 10px 20px;
-    -fx-cursor: hand;
-    -fx-font-family: 'Open Sans';
-}
-
-.botao-login:hover {
-    -fx-background-color: #424242;
-}
-
-.botao-login:pressed {
-    -fx-background-color: #000000;
-}
-
-/* BOTÃO CADASTRO */
-.botao-cadastro {
-    -fx-background-radius: 20px;
-    -fx-background-color: #212121;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 10px 20px;
-    -fx-cursor: hand;
-}
-
-.botao-cadastro:hover {
-    -fx-background-color: #424242;
-}
-
-.botao-cadastro:pressed {
-    -fx-background-color: #000000;
-}
-
-/* CAMPO VERIFICAÇÃO */
-.campo-verific {
-    -fx-background-color: transparent;          
-    -fx-border-color: #A0A0A0;           
-    -fx-border-width: 0 0 1px 0;              
-    -fx-text-fill: white;      
-    -fx-font-size: 22px;    
-    -fx-min-width: 300px;
-    -fx-pref-width: 400px;
-    -fx-max-width: 500px;
-    -fx-prompt-text-fill: #C0C0C0; 
-}
-
-.campo-verific:focused {
-    -fx-border-color: #FFFFFF;         
-    -fx-border-width: 0 0 2px 0;               
-    -fx-prompt-text-fill: #808080; 
-}
-
 .titulo {
     -fx-translate-y: -45;
     -fx-font-size: 34px;
-    -fx-text-fill: #FFFFFF;  
+    -fx-text-fill: #FFFFFF;
     -fx-font-style: italic;
 }
 
-.camposCadastro-text-field {
+/* =========================================================
+   BOTÕES LATERAIS
+   ========================================================= */
+.botao-lateral,
+.botao-lateral-selecionado {
+    -fx-font-size: 28px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-font-family: 'Open Sans';
+    -fx-min-width: 300px;
+    -fx-pref-width: 300px;
+    -fx-max-width: 300px;
+    -fx-pref-height: 60px;
+    -fx-max-height: 60px;
+    -fx-min-height: 60px;
+    -fx-alignment: center-left;
+}
+
+.botao-lateral {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+}
+
+.botao-lateral-selecionado {
+    -fx-background-color: #E0E0E0;
+    -fx-text-fill: black;
+}
+
+/* =========================================================
+   BOTÕES (BASE + VARIAÇÕES)
+   CORREÇÃO DO WARNING:
+   - Não usamos derive(-fx-background-color, ...)
+   - Usamos -fx-base como cor “fonte”
+   ========================================================= */
+.botao {
+    -fx-background-radius: 20px;
+
+    /* “variável” base (fixa) usada pro pressed/hover sem loop */
+    -fx-base: #3D3D3D;
+
+    /* background real vem da base */
+    -fx-background-color: -fx-base;
+
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-font-family: 'Open Sans';
+}
+
+/* Se quiser efeito no hover, você pode manter/ativar:
+.botao:hover {
+    -fx-background-color: derive(-fx-base, 10%);
+}
+*/
+
+.botao:pressed {
+    -fx-background-color: derive(-fx-base, -25%);
+}
+
+/* Variações: só mudam a base (sem precisar duplicar tudo) */
+.botao-login,
+.botao-dialog {
+    -fx-base: #3D3D3D;
+}
+
+.botao-cadastro {
+    /* mantém seu estilo, mas usa base pra evitar loop */
+    -fx-background-radius: 20px;
+    -fx-base: #212121;
+    -fx-background-color: -fx-base;
+
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-font-family: 'Open Sans';
+}
+
+.botao-cadastro:pressed {
+    -fx-background-color: derive(-fx-base, -25%);
+}
+
+/* =========================================================
+   CAMPOS - TRANSPARENTE (UNDERLINE)
+   ========================================================= */
+.text-field.campo-transparente {
     -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+
+    -fx-border-style: solid;
+    -fx-border-color: transparent transparent #7a7a7a transparent;
+    -fx-border-width: 0 0 1px 0;
+
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+    -fx-prompt-text-fill: #999999;
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+
+    -fx-padding: 6 2 6 2;
+}
+
+.text-field.campo-transparente:focused {
+    -fx-border-color: transparent transparent #FFFFFF transparent;
+    -fx-border-width: 0 0 2px 0;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* =========================================================
+   CAMPO DE VERIFICAÇÃO (UNDERLINE)
+   ========================================================= */
+.text-field.campo-verific {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+
+    -fx-border-style: solid;
+    -fx-border-color: transparent transparent #A0A0A0 transparent;
+    -fx-border-width: 0 0 1px 0;
+
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+
+    -fx-min-width: 300px;
+    -fx-pref-width: 400px;
+    -fx-max-width: 500px;
+
+    -fx-prompt-text-fill: #C0C0C0;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 6 2 6 2;
+}
+
+.text-field.campo-verific:focused {
+    -fx-border-color: transparent transparent #FFFFFF transparent;
+    -fx-border-width: 0 0 2px 0;
+
+    -fx-prompt-text-fill: #808080;
+}
+
+/* =========================================================
+   CAMPOS “CAIXA” (Cadastro)
+   ========================================================= */
+.text-field.camposCadastro-text-field {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+
     -fx-border-color: #cccccc;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
+
     -fx-padding: 8 10 8 10;
     -fx-text-fill: white;
     -fx-prompt-text-fill: #aaaaaa;
     -fx-font-size: 18px;
-    -fx-focus-color: transparent;   
-    -fx-faint-focus-color: transparent; 
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
-/* Foco imediato */
-.camposCadastro-text-field:focused {
+.text-field.camposCadastro-text-field:focused {
     -fx-border-color: #66afe9;
     -fx-border-width: 1.5;
 }
 
-/* Hover opcional */
-.camposCadastro-text-field:hover {
+.text-field.camposCadastro-text-field:hover {
     -fx-border-color: #bfbfbf;
 }
 
-.custom-text-field {
-    -fx-background-color: transparent;
-    -fx-border-width: 0;
-    -fx-font-size: 16px;
-}
-
-.custom-field-box {
-    -fx-background-color: #f0f0f0;
-    -fx-padding: 8 12;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-border-color: #ccc;
-    -fx-border-width: 1;
-}
-
-.text-field-icon {
-    -fx-opacity: 0.6;
-}
-
+/* =========================================================
+   SEARCH BAR
+   ========================================================= */
 .search-bar {
     -fx-background-color: #303030;
     -fx-background-radius: 25px;
     -fx-padding: 5 10 5 10;
     -fx-border-radius: 25px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3,0,0,1);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
     -fx-font-size: 14px;
     -fx-text-fill: white;
     -fx-prompt-text-fill: white;
@@ -196,12 +225,15 @@
 
 .search-bar .text-field {
     -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
     -fx-border-width: 0;
     -fx-padding: 5 10 5 10;
     -fx-font-size: 14px;
     -fx-text-fill: white;
     -fx-prompt-text-fill: white;
-    -fx-pref-width: 10px;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .search-bar .button {
@@ -211,15 +243,21 @@
     -fx-cursor: hand;
 }
 
-/* Labels do formulário */
+/* =========================================================
+   FORM (Labels)
+   ========================================================= */
 .form-label {
     -fx-font-size: 16px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
-/* Campos de entrada (ComboBox, TextField, DatePicker) */
-.combo-box-base, .text-field, .date-picker, .combo-box {
+/* =========================================================
+   COMBOBOX / DATEPICKER
+   ========================================================= */
+.combo-box-base,
+.date-picker,
+.combo-box {
     -fx-background-color: transparent;
     -fx-border-color: white;
     -fx-border-radius: 5px;
@@ -267,5 +305,8 @@
 
 .date-picker .text-field {
     -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
     -fx-text-fill: white;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }

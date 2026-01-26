@@ -23,8 +23,9 @@ public class Principal extends BorderPane {
 	private String corFundo = "#212121";
 	private BarraLateral barra;
 	private BarraController barraController;
+	private ControllerInfinit.AtualizadorCarteira atualizador;
 
-	@SuppressWarnings("static-access")
+	@SuppressWarnings("unused")
 	public Principal() throws SQLException {
 
 
@@ -42,17 +43,21 @@ public class Principal extends BorderPane {
 		Integer usuarioId = null;
 
 		try {
-			usuarioId = SessaoDAO.SessaoTemp.getUsuarioId();
-		} catch (Exception ignored) {
-		}
+		    usuarioId = SessaoDAO.SessaoTemp.getUsuarioId();
+		} catch (Exception ignored) {}
 
 		if (usuarioId == null) {
-			try {
-				SessaoDAO sessaoDAO = new SessaoDAO();
-				usuarioId = sessaoDAO.buscarSessao();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		    try {
+		        SessaoDAO sessaoDAO = new SessaoDAO();
+		        usuarioId = SessaoDAO.buscarSessao();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		}
+
+		// ✅ PRIMEIRO DE TUDO: seta a SessaoTemp assim que tiver o id
+		if (usuarioId != null) {
+			BancoInfinit.SessaoDAO.SessaoTemp.setUsuarioId(usuarioId);
 		}
 
 		// ============================
@@ -60,6 +65,14 @@ public class Principal extends BorderPane {
 		// ============================
 		if (usuarioId != null) {
 			carregarAtivosDoUsuarioNaLista(lista, usuarioId);
+
+			atualizador = new ControllerInfinit.AtualizadorCarteira(lista);
+			atualizador.start();
+
+		}
+
+		if (usuarioId != null) {
+			BancoInfinit.SessaoDAO.SessaoTemp.setUsuarioId(usuarioId);
 		}
 
 		// ============================

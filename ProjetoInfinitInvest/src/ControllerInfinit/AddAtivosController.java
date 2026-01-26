@@ -43,18 +43,21 @@ public class AddAtivosController {
 	private final ListaDeAtivos listaView;
 
 	private final ContextMenu suggestionsMenu = new ContextMenu();
+	@SuppressWarnings("resource")
 	private final ExecutorService executor = Executors.newCachedThreadPool();
 	private final PauseTransition pause = new PauseTransition(Duration.millis(320));
 
 	private final java.util.concurrent.atomic.AtomicBoolean atualizandoAtivos = new java.util.concurrent.atomic.AtomicBoolean(false);
 	private final java.util.concurrent.atomic.AtomicBoolean atualizandoCriptos = new java.util.concurrent.atomic.AtomicBoolean(false);
 	private final java.util.concurrent.atomic.AtomicBoolean atualizandoTesouro = new java.util.concurrent.atomic.AtomicBoolean(false);
+	private final java.util.concurrent.atomic.AtomicBoolean atualizandoRendaFixa = new java.util.concurrent.atomic.AtomicBoolean(false);
 
 
 	private AssetType tipoSelecionado = AssetType.ACOES;
 	private TituloTesouro tesouroSelecionado;
 
 
+	@SuppressWarnings("resource")
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 
@@ -85,11 +88,20 @@ public class AddAtivosController {
 		configurarCampoPreco();
 		configurarBotaoAdicionar();
 
+		// === refresh imediato ao abrir a tela ===
+		Platform.runLater(() -> {
+			atualizarAtivosDoUsuario();
+			atualizarCriptos();
+			atualizarTesouroDiretoRendimento();
+			atualizarRendaFixaRendimento();
+		});
+
+
 
 		scheduler.scheduleAtFixedRate(this::atualizarTesouroDiretoRendimento, 5, 60, TimeUnit.SECONDS);
 		scheduler.scheduleAtFixedRate(this::atualizarAtivosDoUsuario, 0, 5, TimeUnit.MINUTES);
 		scheduler.scheduleAtFixedRate(this::atualizarCriptos, 10, 60, TimeUnit.SECONDS);
-
+		scheduler.scheduleAtFixedRate(this::atualizarRendaFixaRendimento, 20, 6, TimeUnit.HOURS);
 		scheduler.scheduleAtFixedRate(this::atualizarTesouroDiretoRendimento, 15, 6, TimeUnit.HOURS);
 
 
@@ -156,8 +168,10 @@ public class AddAtivosController {
 						double dyMensalPercent = 0.0;
 						try {
 							dyMensalPercent = Brapi.buscarDividendYieldMensal12mPercent(ticker, precoAtual);
-						} catch (Exception ignored) {
+						} catch (Exception ex) {
+							ex.printStackTrace();
 						}
+
 
 						final double dyMensalFinal = dyMensalPercent;
 
@@ -166,7 +180,9 @@ public class AddAtivosController {
 
 
 
-					} catch (Exception ignored) {
+					} catch (Exception ex) {
+						ex.printStackTrace();
+
 					}
 				});
 			}
@@ -239,8 +255,10 @@ public class AddAtivosController {
 						String logo = ativo.getIconUrl();
 						Platform.runLater(() -> listaView.atualizarOuAdicionarCriptomoeda(logo, symbol, quantidade, precoMedio, precoAtual, variacao, saldo));
 
-					} catch (Exception ignored) {
+					} catch (Exception ex) {
+						ex.printStackTrace();
 					}
+
 				});
 			}
 
@@ -257,6 +275,7 @@ public class AddAtivosController {
 	// Controla mudança do tipo de ativo selecionado.
 	// Ajusta comportamento da UI conforme a categoria.
 
+	@SuppressWarnings("incomplete-switch")
 	private void configurarTipoCombo() {
 		view.getTipoCombo().valueProperty().addListener((obs, oldVal, newVal) -> {
 
@@ -569,7 +588,6 @@ public class AddAtivosController {
 	// Processa adição de renda fixa.
 	// Consolida títulos por nome canônico.
 
-	@SuppressWarnings("unused")
 	private void processarAdicaoRendaFixa() {
 
 		// --- LEITURA E VALIDAÇÃO NA THREAD DE UI (antes do Task) ---
@@ -586,7 +604,8 @@ public class AddAtivosController {
 			if (!taxaStr.isEmpty()) {
 				taxaParsed = Double.parseDouble(taxaStr) / 100.0;
 			}
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			taxaParsed = 0.0;
 		}
 
@@ -601,10 +620,10 @@ public class AddAtivosController {
 		final String nomeAtivoFinal = nomeAtivo;
 		final double taxaFinal = taxaParsed;
 		final double valorInicialFinal = valorInicial;
+		final String hojeStr = java.time.LocalDate.now().toString();
+		final double aporte = valorInicialFinal;
 		final String indexadorFinal = indexador;
 		final String formaFinal = forma;
-		final String tipoTituloFinal = tipoTitulo;
-		final String emissorFinal = emissor;
 
 		Task<Void> task = new Task<>() {
 			@Override
@@ -620,38 +639,43 @@ public class AddAtivosController {
 					var ativoExistente = dao.buscarAtivoPorUsuarioECategoria(usuarioId, nomeAtivoFinal, "Renda Fixa");
 
 					if (ativoExistente != null) {
-						// soma o saldo ao existente (mantém rentabilidade armazenada em 'quantidade')
+
+						// soma saldo
 						double saldoAntigo = ativoExistente.getSaldo();
 						double novoSaldo = saldoAntigo + valorInicialFinal;
 
-						double rentabilidadeExistente = ativoExistente.getQuantidade(); // quantidade guarda rentabilidade no modelo atual
-						double variacaoExistente = ativoExistente.getVariacao();
+						// mantém seu padrão atual: quantidade = "rentabilidade" (por enquanto)
+						final double rentabilidadeExistente = ativoExistente.getQuantidade();
+						final double variacaoExistente = ativoExistente.getVariacao();
 
-						// atualiza no banco (mantendo o padrão: quantidade = rentabilidade)
-						dao.atualizarAtivo(ativoExistente.getId(), rentabilidadeExistente, 0.0, 0.0, variacaoExistente, novoSaldo);
+						// atualiza tabela principal (ativos)
+						dao.atualizarAtivo(ativoExistente.getId(), rentabilidadeExistente, // quantidade = rentabilidade
+								0.0, 0.0, variacaoExistente, novoSaldo);
 
-						// atualiza UI
+						// atualiza meta RF (principal + ultimo dia) usando UPDATE com soma (sem depender de getRfPrincipal)
+						dao.somarPrincipalRendaFixaETocarUltimoDiaPorNome(usuarioId, nomeAtivoFinal, indexadorFinal, formaFinal, taxaFinal, aporte, hojeStr);
+
+						final double novoSaldoFinalLocal = novoSaldo;
+
 						Platform.runLater(() -> {
-							listaView.atualizarOuAdicionarRendaFixa(nomeAtivoFinal, rentabilidadeExistente, variacaoExistente, novoSaldo);
-
+							listaView.atualizarOuAdicionarRendaFixa(nomeAtivoFinal, rentabilidadeExistente, variacaoExistente, novoSaldoFinalLocal);
 							view.mostrarTelaSucesso(() -> {
-								// aqui você pode só atualizar painel/infos via banco,
-								// mas como RF não depende de API, pode ser só um refresh da lista se quiser.
 							});
 						});
 
 					} else {
-						// não existe: insere novo (quantidade guarda a rentabilidade)
+
+						// não existe: insere novo (quantidade guarda rentabilidade)
 						dao.insertRendaFixa(usuarioId, nomeAtivoFinal, taxaFinal, 0.0, valorInicialFinal);
+
+						// salva meta inicial RF
+						dao.atualizarCamposRendaFixaMetaPorNome(usuarioId, nomeAtivoFinal, indexadorFinal, formaFinal, taxaFinal, aporte, hojeStr);
 
 						Platform.runLater(() -> {
 							listaView.adicionarRendaFixa(nomeAtivoFinal, taxaFinal, 0.0, valorInicialFinal);
-
 							view.mostrarTelaSucesso(() -> {
-								// opcional: nada, ou recalcular painéis
 							});
 						});
-
 					}
 
 				} catch (Exception ex) {
@@ -663,6 +687,7 @@ public class AddAtivosController {
 
 		executor.submit(task);
 	}
+
 
 	private void processarAdicaoTesouroDireto() {
 
@@ -781,6 +806,7 @@ public class AddAtivosController {
 	private void processarAdicaoAcoes(Integer usuarioId, String categoria, String ticker, double qtdNova, double precoAtual) {
 
 		Task<Void> task = new Task<>() {
+			@SuppressWarnings("unused")
 			@Override
 			protected Void call() {
 				try {
@@ -804,11 +830,9 @@ public class AddAtivosController {
 							rendimentoMensal = Brapi.buscarDividendYieldMensal12mPercent(ticker, precoAtual);
 
 						} catch (Exception ex) {
-							System.out.println("[DIV] falha ao buscar rendimento: " + ticker + " -> " + ex.getMessage());
 							ex.printStackTrace();
 							rendimentoMensal = 0.0;
 						}
-						System.out.println("[DIV] " + ticker + " qtd=" + qtdTotal + " rendMensal(R$)=" + rendimentoMensal);
 
 						dao.atualizarAtivo(ativoExistente.getId(), qtdTotal, novoPM, precoAtual, variacao, saldo);
 
@@ -818,7 +842,9 @@ public class AddAtivosController {
 						double dyMensalPercent = 0.0;
 						try {
 						    dyMensalPercent = Brapi.buscarDividendYieldMensal12mPercent(ticker, precoAtual);
-						} catch (Exception ignored) {}
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
 
 						final double dyMensalFinal = dyMensalPercent;
 
@@ -970,11 +996,10 @@ public class AddAtivosController {
 						String ultimoDiaStr = ativo.getTdUltimoDia(); // "2026-01-08"
 
 						if (indexador == null || indexador.isBlank()) {
-							System.out.println("[TD-SKIP] sem indexador: ativo=" + ativo.getAtivo());
+
 							continue;
 						}
 						if (ultimoDiaStr == null || ultimoDiaStr.isBlank()) {
-							System.out.println("[TD-SKIP] sem ultimoDia: ativo=" + ativo.getAtivo() + " -> setando hoje");
 							dao.atualizarCamposTesouroMeta(ativo.getId(), indexador, taxaAnual, principal, hoje.toString());
 							continue;
 						}
@@ -1039,8 +1064,7 @@ public class AddAtivosController {
 							continue;
 						}
 
-						System.out.println("[TD] ativo=" + ativo.getAtivo() + " ultimoDia=" + ultimoDiaStr + " dias=" + dias + " idx=" + indexador + " taxaAnual=" + taxaAnual + " principal="
-								+ principal + " saldoAntes=" + saldoAnterior);
+
 
 						// variação vs principal
 						double variacao = (principal > 0) ? ((saldoNovo - principal) / principal) * 100.0 : 0.0;
@@ -1048,8 +1072,6 @@ public class AddAtivosController {
 						double qtd = ativo.getQuantidade();
 						double puEstimado = (qtd > 0) ? (saldoNovo / qtd) : 0.0;
 
-						System.out.printf("[TD] %s | idx=%s | dias=%d | principal=%.2f | saldoAntes=%.2f | saldoNovo=%.2f | var=%.4f%% | pu=%.6f%n", ativo.getAtivo(), indexador, dias, principal,
-								saldoAnterior, saldoNovo, variacao, puEstimado);
 
 						// Atualiza banco:
 						dao.atualizarAtivo(ativo.getId(), qtd, 0.0, puEstimado, variacao, saldoNovo);
@@ -1072,6 +1094,164 @@ public class AddAtivosController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void atualizarRendaFixaRendimento() {
+		System.out.println(">>> atualizandoRendaFixaRendimento rodou");
+
+		if (!atualizandoRendaFixa.compareAndSet(false, true))
+			return;
+
+		try {
+			Integer usuarioId = SessaoTemp.getUsuarioId();
+			if (usuarioId == null)
+				return;
+
+			Dao dao = new Dao();
+			@SuppressWarnings("static-access")
+			var ativos = dao.listarAtivosPorUsuario(usuarioId);
+
+			java.time.LocalDate hoje = java.time.LocalDate.now();
+
+			executor.submit(() -> {
+				try {
+
+					// (Opcional) cache de CDI diário / IPCA anual se você tiver serviço disso
+					Double cdiDiaPercent = null; // ex: 0.045% ao dia (percentual ao dia)
+					Double ipcaAaPercent = null; // ex: 4.28 (% a.a.)
+
+					for (var ativo : ativos) {
+
+						if (!"Renda Fixa".equalsIgnoreCase(ativo.getCategoria()))
+							continue;
+
+						// ======= esses getters você vai ter que ter no seu model =======
+						String indexador = ativo.getRfIndexador(); // "CDI", "CDI+", "IPCA+"
+						String forma = ativo.getRfForma(); // "PRE", "POS", "HIBRIDO" (recomendado)
+						double taxaAnual = ativo.getRfTaxaAnual(); // ex: 0.155 (15,5% a.a.) OU spread real
+						double principal = ativo.getRfPrincipal(); // base (aporte acumulado)
+						String ultimoDiaStr = ativo.getRfUltimoDia();// "2026-01-08"
+
+						System.out.println("RF DEBUG -> ativo=" + ativo.getAtivo() + " ultimoDia=" + ativo.getRfUltimoDia() + " indexador=" + ativo.getRfIndexador() + " taxaAnual="
+								+ ativo.getRfTaxaAnual() + " saldo=" + ativo.getSaldo());
+
+						if (ultimoDiaStr == null || ultimoDiaStr.isBlank()) {
+							dao.atualizarCamposRendaFixaMeta(ativo.getId(), indexador, forma, taxaAnual, principal, hoje.toString());
+							continue;
+						}
+
+
+						java.time.LocalDate ultimoDia;
+						try {
+							ultimoDia = java.time.LocalDate.parse(ultimoDiaStr);
+						} catch (Exception e) {
+							dao.atualizarCamposRendaFixaMeta(ativo.getId(), indexador, forma, taxaAnual, principal, hoje.toString());
+							continue;
+						}
+
+						long dias = java.time.temporal.ChronoUnit.DAYS.between(ultimoDia, hoje);
+						if (dias <= 0)
+							continue;
+
+						double saldoAnterior = ativo.getSaldo();
+						double saldoNovo = saldoAnterior;
+
+						double tAnos = dias / 365.0; // MVP: base calendário
+
+						System.out.println("RF DEBUG -> dias=" + dias);
+
+						// ========= cálculo =========
+						// Observação: sem histórico diário real de CDI/IPCA, isso vira PROJEÇÃO.
+						// Se você quiser exatidão, precisa consultar séries diárias/mensais.
+						if (indexador == null)
+							indexador = "";
+
+						switch (indexador.toUpperCase()) {
+
+						case "CDI": {
+							// % do CDI: precisa de CDI diário real OU aproximar por uma taxa anual equivalente.
+							// Se você tiver um serviço de CDI diário, use.
+							if (cdiDiaPercent == null) {
+
+								saldoNovo = saldoAnterior * Math.pow(1.0 + taxaAnual, tAnos);
+								break;
+							}
+							double fator = Math.pow(1.0 + (cdiDiaPercent / 100.0), dias);
+							saldoNovo = saldoAnterior * fator;
+							break;
+						}
+
+						case "CDI+": {
+							// CDI + spread: precisa CDI (diário ou acumulado) * E spread.
+							// Você vai querer dois campos: percentIndexador e spread.
+							double spreadAa = ativo.getRfSpreadAnual(); // ex: 0.02
+							double percentCdi = ativo.getRfPercentIndexador(); // ex: 1.00 (100%)
+
+							if (cdiDiaPercent == null) {
+								// fallback grosseiro: usa taxaAnual como “taxa total anual”
+								double fator = Math.pow(1.0 + taxaAnual, tAnos);
+								saldoNovo = saldoAnterior * fator;
+								break;
+							}
+
+							// aproximação: aplica CDI diário ajustado pelo % e depois spread
+							double fatorCdi = Math.pow(1.0 + ((cdiDiaPercent * percentCdi) / 100.0), dias);
+							double fatorSpread = Math.pow(1.0 + spreadAa, tAnos);
+							saldoNovo = saldoAnterior * (fatorCdi * fatorSpread);
+							break;
+						}
+
+						case "IPCA+": {
+							// IPCA + taxa real (híbrido)
+							double taxaRealAa = taxaAnual; // aqui taxaAnual = taxa real
+							if (ipcaAaPercent == null) {
+								ipcaAaPercent = Apis.IpcaService.getIpcaAtual(); // % a.a.
+								if (ipcaAaPercent == null || ipcaAaPercent < 0)
+									ipcaAaPercent = 0.0;
+							}
+							double fatorIpca = Math.pow(1.0 + (ipcaAaPercent / 100.0), tAnos);
+							double fatorReal = Math.pow(1.0 + taxaRealAa, tAnos);
+							saldoNovo = saldoAnterior * (fatorIpca * fatorReal);
+							break;
+						}
+
+						default: {
+							// Se for “PRE” sem indexador, trate como prefixado:
+							double fator = Math.pow(1.0 + taxaAnual, tAnos);
+							saldoNovo = saldoAnterior * fator;
+							break;
+						}
+						}
+
+						double variacao = (principal > 0) ? ((saldoNovo - principal) / principal) * 100.0 : 0.0;
+
+						// rentabilidade (%) — você pode decidir exibir igual variacao (mesmo número)
+						double rentabilidade = variacao;
+
+						// Atualiza banco (mantendo seu padrão atual da UI RF):
+						// quantidade = rentabilidade
+						dao.atualizarAtivo(ativo.getId(), rentabilidade, 0.0, 0.0, variacao, saldoNovo);
+						dao.atualizarCamposRendaFixaMeta(ativo.getId(), indexador, forma, taxaAnual, principal, hoje.toString());
+
+						final String nomeAtivoFinal = ativo.getAtivo();
+						final double rentFinal = rentabilidade;
+						final double varFinal = variacao;
+						final double saldoFinal = saldoNovo;
+
+						Platform.runLater(() -> listaView.atualizarOuAdicionarRendaFixa(nomeAtivoFinal, rentFinal, varFinal, saldoFinal));
+					}
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				} finally {
+					atualizandoRendaFixa.set(false);
+				}
+			});
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			atualizandoRendaFixa.set(false);
 		}
 	}
 
@@ -1149,13 +1329,17 @@ public class AddAtivosController {
 	public void dispose() {
 		try {
 			scheduler.shutdownNow();
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+
 
 		try {
 			executor.shutdownNow();
-		} catch (Exception ignored) {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+
 	}
 
 	private static final String LOGOKIT_TOKEN = "pk_fre0d0771b214e45db3dbb";

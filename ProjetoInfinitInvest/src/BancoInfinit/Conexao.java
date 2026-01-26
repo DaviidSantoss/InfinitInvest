@@ -35,6 +35,7 @@ public class Conexao {
 	}
 
 	// Sempre retorna uma nova conexão
+	@SuppressWarnings("resource")
 	public Connection getConnection() {
 		try {
 			return DriverManager.getConnection(URL);

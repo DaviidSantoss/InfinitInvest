@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 
 public final class LogoFetcher {
 
+	@SuppressWarnings("resource")
 	private static final HttpClient CLIENT = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).connectTimeout(Duration.ofSeconds(8)).build();
 
 	// cache simples pra não ficar baixando o mesmo logo toda hora
