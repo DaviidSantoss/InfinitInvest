@@ -43,7 +43,6 @@ public class AddAtivosController {
 	private final ListaDeAtivos listaView;
 
 	private final ContextMenu suggestionsMenu = new ContextMenu();
-	@SuppressWarnings("resource")
 	private final ExecutorService executor = Executors.newCachedThreadPool();
 	private final PauseTransition pause = new PauseTransition(Duration.millis(320));
 
@@ -57,7 +56,6 @@ public class AddAtivosController {
 	private TituloTesouro tesouroSelecionado;
 
 
-	@SuppressWarnings("resource")
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 
@@ -275,7 +273,7 @@ public class AddAtivosController {
 	// Controla mudança do tipo de ativo selecionado.
 	// Ajusta comportamento da UI conforme a categoria.
 
-	@SuppressWarnings("incomplete-switch")
+	@SuppressWarnings("unused")
 	private void configurarTipoCombo() {
 		view.getTipoCombo().valueProperty().addListener((obs, oldVal, newVal) -> {
 
@@ -309,6 +307,7 @@ public class AddAtivosController {
 				qtd.setText("0,01");
 			}
 
+			// $CASES-OMITTED$
 			default -> {
 				// Ações, FIIs, ETFs
 				qtd.setText("1");
@@ -322,7 +321,7 @@ public class AddAtivosController {
 	// Configura busca com autocomplete de ativos.
 	// Dispara chamadas à API conforme o tipo selecionado.
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private void configurarBuscaAtivos() {
 		TextField textField = view.getAtivoCombo();
 
@@ -453,6 +452,7 @@ public class AddAtivosController {
 	// Controla edição do campo quantidade.
 	// Permite frações para cripto e recalcula total.
 
+	@SuppressWarnings("unused")
 	private void configurarCampoQuantidade() {
 
 		TextField qtdField = view.getQtdField();
@@ -504,6 +504,7 @@ public class AddAtivosController {
 		});
 	}
 
+	@SuppressWarnings("unused")
 	private void configurarCampoPreco() {
 		TextField precoField = view.getPrecoField();
 
@@ -540,6 +541,7 @@ public class AddAtivosController {
 	// Decide qual fluxo de adição executar.
 	// Direciona para ações, cripto ou renda fixa.
 
+	@SuppressWarnings("unused")
 	private void configurarBotaoAdicionar() {
 
 		view.getAdicionarAtivios().setOnAction(e -> {
@@ -1302,6 +1304,7 @@ public class AddAtivosController {
 	// Busca preço atual via API para ações/FIIs.
 	// Atualiza UI e lista visual.
 
+	@SuppressWarnings("unused")
 	private void buscarPrecoAtual(String ticker) {
 
 		Task<AssetInfo> task = new Task<>() {

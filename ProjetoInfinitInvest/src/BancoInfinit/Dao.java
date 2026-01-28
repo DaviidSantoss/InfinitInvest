@@ -136,7 +136,6 @@ public class Dao {
 	// ====================
 	// Buscar usuário por email
 	// ====================
-	@SuppressWarnings("resource")
 	public static Usuario buscarPorEmail(String email) {
 		String sql = "SELECT * FROM usuarios WHERE LOWER(email) = LOWER(?)";
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {

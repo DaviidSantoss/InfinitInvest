@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import BancoInfinit.Dao;
 import BancoInfinit.SessaoDAO.SessaoTemp;
+import ControllerInfinit.PesquisaController;
 import ControllerInfinit.ResumoCarteira;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -73,6 +74,7 @@ public class Infos extends StackPane {
 		searchField.setMaxWidth(barraLargura);
 		searchField.setStyle("-fx-font-size: 14px; -fx-background-radius: 20; -fx-padding: 10;");
 		searchField.getStyleClass().add("search-bar");
+		new PesquisaController().configurar(searchField);
 
 		// ========================
 		// Container para a barra de pesquisa.

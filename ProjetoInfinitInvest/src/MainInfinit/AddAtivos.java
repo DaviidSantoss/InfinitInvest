@@ -393,7 +393,7 @@ public class AddAtivos extends StackPane {
 			} else {
 				grid.add(bottomBar, 0, 6, 2, 1);
 				totalLabel.setText("Valor total: R$ 0,00");
-				dialog.setHeight(430);
+				dialog.setHeight(490);
 			}
 
 			GridPane.setMargin(bottomBar, new Insets(0, 0, 10, 0));
