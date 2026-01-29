@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import BancoInfinit.SessaoDAO;
 import MainInfinit.Anotacoes;
 import MainInfinit.BarraLateral;
-import MainInfinit.Import;
 import MainInfinit.Principal;
 import MainInfinit.lancamentos;
 import javafx.scene.Node;
@@ -47,6 +46,7 @@ public class BarraController {
 
 	        });
 
+
 			barraLateral.getAnotacoes().setOnAction(e -> {
 				selecionarBotao(barraLateral.getAnotacoes(), "/LoginInfinit/imagens/bookBlack.png");
 
@@ -74,17 +74,11 @@ public class BarraController {
 
 			barraLateral.getImportexport().setOnAction(e -> {
 				selecionarBotao(barraLateral.getImportexport(), "/LoginInfinit/imagens/importBlack.png");
-				
-				Import import1 = new Import(); // instanciando o layout
-				Scene novaCena = new Scene(import1, 1920, 1080); // tamanho da cena
 
-				Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-				stage.setScene(novaCena);
-				stage.setMaximized(true);
-				stage.show();
-				
-				
+				new ImportarEexportarController().abrirPopup(barraLateral.getScene() != null ? barraLateral.getScene().getWindow() : null);
 			});
+
+
 
 			barraLateral.getSair().setOnAction(e -> {
 				try {

@@ -816,7 +816,9 @@ public class AddAtivosController {
 					var ativoExistente = dao.buscarAtivoPorUsuarioECategoria(usuarioId, ticker, categoria);
 					
 
+
 					if (ativoExistente != null) {
+
 
 						double qtdAntiga = ativoExistente.getQuantidade();
 						double pmAntigo = ativoExistente.getPrecoMedio();
@@ -846,7 +848,12 @@ public class AddAtivosController {
 						    dyMensalPercent = Brapi.buscarDividendYieldMensal12mPercent(ticker, precoAtual);
 						} catch (Exception ex) {
 							ex.printStackTrace();
+
 						}
+						String hojeIso = java.time.LocalDate.now().toString();
+						dao.inserirLancamento(usuarioId, categoria, ticker, qtdNova, precoAtual, hojeIso);
+
+						System.out.println("✅ Lancamento inserido: " + ticker + " qtd=" + qtdNova + " pu=" + precoAtual);
 
 						final double dyMensalFinal = dyMensalPercent;
 
@@ -865,6 +872,10 @@ public class AddAtivosController {
 
 						double saldo = precoAtual * qtdNova;
 						String logoUrl = Apis.LogoKit.byStockTicker(ticker);
+
+						String hojeIso = java.time.LocalDate.now().toString();
+						dao.inserirLancamento(usuarioId, categoria, ticker, qtdNova, precoAtual, hojeIso);
+						System.out.println("✅ Lancamento inserido: " + ticker + " qtd=" + qtdNova + " pu=" + precoAtual);
 
 						dao.insertAtivo(categoria, ticker, logoUrl, qtdNova, precoAtual, precoAtual, 0, saldo);
 

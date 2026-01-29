@@ -5,17 +5,23 @@
     "name": "Banco BTG Pactual S.A.",
     "type": "ACOES"
   },
+  "BPAC5F": {
+    "ticker": "BPAC5F",
+    "price": 11.75,
+    "name": "",
+    "type": "ACOES"
+  },
   "BPAC3": {
     "ticker": "BPAC3",
     "price": 44.19,
     "name": "Banco BTG Pactual S.A.",
     "type": "ACOES"
   },
-  "BPAC5F": {
-    "ticker": "BPAC5F",
-    "price": 11.75,
-    "name": "",
-    "type": "ACOES"
+  "VGHF11": {
+    "ticker": "VGHF11",
+    "price": 7.22,
+    "name": "Valora Hedge Fund Fundo De Investimento Imobiliario - Fii",
+    "type": "FIIS"
   },
   "BBAS3F": {
     "ticker": "BBAS3F",
@@ -23,10 +29,10 @@
     "name": "",
     "type": "ACOES"
   },
-  "GBIT11": {
-    "ticker": "GBIT11",
-    "price": 90.49,
-    "name": "Galapagos Bitcoin Cme Cf Fundo De Indice",
+  "VGRI11": {
+    "ticker": "VGRI11",
+    "price": 8.65,
+    "name": "Valora Renda Imobiliaria Fundo De Investimento Imobiliario - Responsabilidade Limitada",
     "type": "FIIS"
   },
   "GGBR3": {
@@ -34,6 +40,12 @@
     "price": 20.19,
     "name": "Gerdau S.A.",
     "type": "ACOES"
+  },
+  "GBIT11": {
+    "ticker": "GBIT11",
+    "price": 90.49,
+    "name": "Galapagos Bitcoin Cme Cf Fundo De Indice",
+    "type": "FIIS"
   },
   "GGBR3F": {
     "ticker": "GGBR3F",
@@ -125,6 +137,12 @@
     "name": "BB Seguridade Participações S.A.",
     "type": "ACOES"
   },
+  "VGIA11": {
+    "ticker": "VGIA11",
+    "price": 10.01,
+    "name": "Valora Cra Fundo De Investimento In Agroindustrial Production Chains - Fiagro-Imobiliário",
+    "type": "FIIS"
+  },
   "BITO39": {
     "ticker": "BITO39",
     "price": 79.21,
@@ -189,6 +207,12 @@
     "ticker": "ITSA3",
     "price": 14.12,
     "name": "Itaúsa S.A.",
+    "type": "ACOES"
+  },
+  "AVGO34": {
+    "ticker": "AVGO34",
+    "price": 24.61,
+    "name": "Broadcom Inc.",
     "type": "ACOES"
   },
   "HTMX11": {
@@ -335,11 +359,23 @@
     "name": "",
     "type": "ACOES"
   },
+  "VGIR11": {
+    "ticker": "VGIR11",
+    "price": 9.87,
+    "name": "Valora Re III Fundo De Investimento Imobiliario",
+    "type": "FIIS"
+  },
   "PETR4F": {
     "ticker": "PETR4F",
     "price": 36.27,
     "name": "",
     "type": "ACOES"
+  },
+  "VGIP11": {
+    "ticker": "VGIP11",
+    "price": 82.6,
+    "name": "Valora Cri Indice De Preco Fundo De Investimento Imobiliario",
+    "type": "FIIS"
   },
   "CMIG4": {
     "ticker": "CMIG4",

@@ -316,6 +316,21 @@ public class Dao {
 					    );
 					""");
 
+			// Tabela lancamentos (histórico)
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS lancamentos (
+					        id INTEGER PRIMARY KEY AUTOINCREMENT,
+					        usuario_id INTEGER NOT NULL,
+					        categoria TEXT NOT NULL,
+					        ativo TEXT NOT NULL,
+					        quantidade REAL NOT NULL,
+					        preco_unit REAL NOT NULL,
+					        data_lancamento TEXT NOT NULL, -- ISO yyyy-MM-dd
+					        total REAL NOT NULL,
+					        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+					    );
+					""");
+
 			// Tabela anotacoes (1 texto por usuário)
 			stmt.execute("""
 					    CREATE TABLE IF NOT EXISTS anotacoes (
@@ -347,6 +362,20 @@ public class Dao {
 					        saldo REAL NOT NULL
 					    );
 					""");
+
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS lancamentos (
+					        id INTEGER PRIMARY KEY AUTOINCREMENT,
+					        usuario_id INTEGER NOT NULL,
+					        categoria TEXT NOT NULL,
+					        ativo TEXT NOT NULL,
+					        quantidade REAL NOT NULL,
+					        preco_unit REAL NOT NULL,
+					        data_lancamento TEXT NOT NULL,
+					        total REAL NOT NULL
+					    );
+					""");
+
 			// Tabela anotacoes (1 texto por usuário)
 			stmt.execute("""
 					    CREATE TABLE IF NOT EXISTS anotacoes (
@@ -878,6 +907,218 @@ public class Dao {
 			ps.executeUpdate();
 
 		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static class Lancamento {
+		public final int id;
+		public final int usuarioId;
+		public final String categoria;
+		public final String ativo;
+		public final double quantidade;
+		public final double precoUnitario;
+		public final String dataLancamentoIso; // yyyy-MM-dd
+		public final double total;
+
+		public Lancamento(int id, int usuarioId, String categoria, String ativo, double quantidade, double precoUnitario, String dataLancamentoIso, double total) {
+			this.id = id;
+			this.usuarioId = usuarioId;
+			this.categoria = categoria;
+			this.ativo = ativo;
+			this.quantidade = quantidade;
+			this.precoUnitario = precoUnitario;
+			this.dataLancamentoIso = dataLancamentoIso;
+			this.total = total;
+		}
+	}
+
+	public void inserirLancamento(int usuarioId, String categoria, String ativo, double quantidade, double precoUnit, String dataIso) {
+		String sql = """
+				INSERT INTO lancamentos (usuario_id, categoria, ativo, quantidade, preco_unit, data_lancamento, total)
+				VALUES (?, ?, ?, ?, ?, ?, ?)
+				""";
+		double total = quantidade * precoUnit;
+
+		try (var conn = Conexao.getInstance().getConnection(); var ps = conn.prepareStatement(sql)) {
+
+			ps.setInt(1, usuarioId);
+			ps.setString(2, categoria);
+			ps.setString(3, ativo);
+			ps.setDouble(4, quantidade);
+			ps.setDouble(5, precoUnit);
+			ps.setString(6, dataIso);
+			ps.setDouble(7, total);
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public java.util.List<Lancamento> listarLancamentos(int usuarioId) {
+		var out = new java.util.ArrayList<Lancamento>();
+		String sql = """
+				SELECT id, usuario_id, categoria, ativo, quantidade, preco_unit, data_lancamento, total
+				FROM lancamentos
+				WHERE usuario_id = ?
+				ORDER BY date(data_lancamento) DESC, id DESC
+				""";
+
+		try (var conn = Conexao.getInstance().getConnection(); var ps = conn.prepareStatement(sql)) {
+
+			ps.setInt(1, usuarioId);
+			try (var rs = ps.executeQuery()) {
+				while (rs.next()) {
+					out.add(new Lancamento(rs.getInt("id"), rs.getInt("usuario_id"), rs.getString("categoria"), rs.getString("ativo"), rs.getDouble("quantidade"), rs.getDouble("preco_unit"),
+							rs.getString("data_lancamento"), rs.getDouble("total")));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return out;
+	}
+
+	public void deletarLancamento(int usuarioId, int lancamentoId) {
+		String sql = "DELETE FROM lancamentos WHERE id = ? AND usuario_id = ?";
+		try (var conn = Conexao.getInstance().getConnection(); var ps = conn.prepareStatement(sql)) {
+
+			ps.setInt(1, lancamentoId);
+			ps.setInt(2, usuarioId);
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void atualizarLancamento(int usuarioId, Lancamento l) {
+		String sql = """
+				UPDATE lancamentos
+				SET quantidade = ?,
+				preco_unit = ?,
+				data_lancamento = ?,
+				total = ?
+				WHERE id = ? AND usuario_id = ?
+				""";
+
+		try (var conn = Conexao.getInstance().getConnection(); var ps = conn.prepareStatement(sql)) {
+
+			ps.setDouble(1, l.quantidade);
+			ps.setDouble(2, l.precoUnitario);
+			ps.setString(3, l.dataLancamentoIso);
+			ps.setDouble(4, l.total);
+			ps.setInt(5, l.id);
+			ps.setInt(6, usuarioId);
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * ✅ Recalcula quantidade total + preco_medio baseado em TODOS os lançamentos do ativo. Isso evita inconsistência quando editar/excluir lançamentos antigos.
+	 */
+	public void recalcularAtivoPorLancamentos(int usuarioId, String categoria, String ativo) {
+// Soma qtd e custo
+		String sqlAgg = """
+				SELECT COALESCE(SUM(quantidade),0) as qtd,
+				COALESCE(SUM(quantidade * preco_unit),0) as custo
+				FROM lancamentos
+				WHERE usuario_id = ? AND categoria = ? AND ativo = ?
+				""";
+
+		try (var conn = Conexao.getInstance().getConnection()) {
+
+			double qtdTotal = 0.0;
+			double custoTotal = 0.0;
+
+			try (var ps = conn.prepareStatement(sqlAgg)) {
+				ps.setInt(1, usuarioId);
+				ps.setString(2, categoria);
+				ps.setString(3, ativo);
+				try (var rs = ps.executeQuery()) {
+					if (rs.next()) {
+						qtdTotal = rs.getDouble("qtd");
+						custoTotal = rs.getDouble("custo");
+					}
+				}
+			}
+
+// Se não tem mais lançamentos, remove o ativo da carteira (opcional, mas faz sentido)
+			if (qtdTotal <= 0.0) {
+				try (var psDel = conn.prepareStatement("DELETE FROM ativos WHERE usuario_id = ? AND categoria = ? AND ativo = ?")) {
+					psDel.setInt(1, usuarioId);
+					psDel.setString(2, categoria);
+					psDel.setString(3, ativo);
+					psDel.executeUpdate();
+				}
+				return;
+			}
+
+			double precoMedio = custoTotal / qtdTotal;
+
+// pega preço atual do ativo se já existir, senão usa PM como fallback
+			double precoAtual = precoMedio;
+			String sqlPreco = "SELECT preco_atual FROM ativos WHERE usuario_id = ? AND categoria = ? AND ativo = ? LIMIT 1";
+			try (var ps = conn.prepareStatement(sqlPreco)) {
+				ps.setInt(1, usuarioId);
+				ps.setString(2, categoria);
+				ps.setString(3, ativo);
+				try (var rs = ps.executeQuery()) {
+					if (rs.next())
+						precoAtual = rs.getDouble("preco_atual");
+				}
+			}
+
+			double saldo = precoAtual * qtdTotal;
+			double variacao = (precoMedio != 0) ? ((precoAtual - precoMedio) / precoMedio) * 100.0 : 0.0;
+
+// Atualiza ativo consolidado
+			String sqlUp = """
+					UPDATE ativos
+					SET quantidade = ?,
+					 preco_medio = ?,
+					 variacao = ?,
+					 saldo = ?
+					WHERE usuario_id = ? AND categoria = ? AND ativo = ?
+					""";
+
+			try (var ps = conn.prepareStatement(sqlUp)) {
+				ps.setDouble(1, qtdTotal);
+				ps.setDouble(2, precoMedio);
+				ps.setDouble(3, variacao);
+				ps.setDouble(4, saldo);
+				ps.setInt(5, usuarioId);
+				ps.setString(6, categoria);
+				ps.setString(7, ativo);
+
+				int updated = ps.executeUpdate();
+
+// se não existia na tabela ativos, insere (precisa manter iconUrl? pode buscar depois)
+				if (updated == 0) {
+					String sqlIns = """
+							  INSERT INTO ativos (usuario_id, categoria, ativo, quantidade, preco_medio, preco_atual, variacao, saldo, iconUrl)
+							  VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL)
+							""";
+					try (var ps2 = conn.prepareStatement(sqlIns)) {
+						ps2.setInt(1, usuarioId);
+						ps2.setString(2, categoria);
+						ps2.setString(3, ativo);
+						ps2.setDouble(4, qtdTotal);
+						ps2.setDouble(5, precoMedio);
+						ps2.setDouble(6, precoAtual);
+						ps2.setDouble(7, variacao);
+						ps2.setDouble(8, saldo);
+						ps2.executeUpdate();
+					}
+				}
+			}
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

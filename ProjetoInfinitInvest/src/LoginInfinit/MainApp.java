@@ -25,6 +25,7 @@ public class MainApp extends Application {
 		Dao.initDatabase();
 		Dao.migrarBancoSeNecessario();
 
+
 		primaryStage.setTitle("InfinitInvest");
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/LoginInfinit/imagens/Icone.png")));
 		primaryStage.setMaximized(true);
