@@ -47,8 +47,8 @@ public class CodigoVerific {
 		// =====================================
 		// Endereço de e-mail do remetente (quem envia o e-mail).
 		// =====================================
-		final String remetente = "sodavidmesmo@zohomail.com";
-		final String senhaApp = "pra100f30";
+		final String remetente = "Seu_Email";
+		final String senhaApp = "Sua_Senha";
 
 		Properties props = new Properties();
 

@@ -8,10 +8,17 @@ import java.util.Objects;
 
 public class TituloTesouro {
 
+	// ==========================================================
+	// CONTEXTO DO MODELO
+	// ==========================================================
+	// Representa um título do Tesouro Direto carregado do CSV,
+	// com dados principais (nome, vencimento, taxa e PU) e derivadas
+	// úteis para busca/ordenação/exibição.
+
 	private final String nome;
 	private final String dataVencimento; // dd/MM/yyyy
 	private final String taxaCompraManha; // ex: "7,88%"
-	private final double puCompraManha; // PREÇO UNITÁRIO REAL
+	private final double puCompraManha; // preço unitário (PU compra manhã)
 
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy", Locale.forLanguageTag("pt-BR"));
 
@@ -22,9 +29,10 @@ public class TituloTesouro {
 		this.puCompraManha = puCompraManha;
 	}
 
-	// =====================
+	// ==========================================================
 	// GETTERS BÁSICOS
-	// =====================
+	// ==========================================================
+	// Acesso direto aos campos principais do título.
 
 	public String getNome() {
 		return nome;
@@ -38,34 +46,43 @@ public class TituloTesouro {
 		return taxaCompraManha;
 	}
 
-	// =====================
-	// PREÇO (PONTO-CHAVE)
-	// =====================
+	// ==========================================================
+	// PREÇO
+	// ==========================================================
+	// PU compra manhã (preço unitário do título).
 
-	/** Preço unitário do Tesouro (PU Compra Manhã) */
 	public double getPreco() {
 		return puCompraManha;
 	}
 
-	// =====================
-	// TAXA
-	// =====================
+	// ==========================================================
+	// TAXA / CONVERSÕES
+	// ==========================================================
+	// Converte taxa textual para decimal anual (ex: "7,88%" -> 0.0788).
 
 	public double getTaxaAnual() {
 		try {
-			return Double.parseDouble(taxaCompraManha.replace("%", "").replace(",", ".")) / 100.0;
+			if (taxaCompraManha == null || taxaCompraManha.isBlank())
+				return 0.0;
+			return Double.parseDouble(taxaCompraManha.replace("%", "").replace(",", ".").trim()) / 100.0;
 		} catch (Exception e) {
 			return 0.0;
 		}
 	}
 
-	// =====================
+	// ==========================================================
 	// DERIVAÇÕES
-	// =====================
+	// ==========================================================
+	// Campos calculados para filtro, ordenação e exibição.
 
 	public int getAnoVencimento() {
 		try {
-			return Integer.parseInt(dataVencimento.split("/")[2]);
+			if (dataVencimento == null)
+				return 0;
+			String[] parts = dataVencimento.split("/");
+			if (parts.length < 3)
+				return 0;
+			return Integer.parseInt(parts[2]);
 		} catch (Exception e) {
 			return 0;
 		}
@@ -73,6 +90,8 @@ public class TituloTesouro {
 
 	public Date getDataAsDate() {
 		try {
+			if (dataVencimento == null || dataVencimento.isBlank())
+				return new Date(0);
 			return SDF.parse(dataVencimento);
 		} catch (ParseException e) {
 			return new Date(0);
@@ -80,7 +99,7 @@ public class TituloTesouro {
 	}
 
 	public String getIndexador() {
-		String n = nome.toUpperCase();
+		String n = (nome == null) ? "" : nome.toUpperCase();
 		if (n.contains("IPCA"))
 			return "IPCA+";
 		if (n.contains("SELIC"))
@@ -94,9 +113,10 @@ public class TituloTesouro {
 		return String.format("%s %s a.a. %d", nome, taxaCompraManha, getAnoVencimento());
 	}
 
-	// =====================
+	// ==========================================================
 	// OVERRIDES
-	// =====================
+	// ==========================================================
+	// toString para UI, e equals/hashCode para deduplicação.
 
 	@Override
 	public String toString() {
@@ -110,11 +130,16 @@ public class TituloTesouro {
 		if (!(o instanceof TituloTesouro))
 			return false;
 		TituloTesouro t = (TituloTesouro) o;
-		return nome.equalsIgnoreCase(t.nome) && getAnoVencimento() == t.getAnoVencimento();
+
+		String n1 = (this.nome == null) ? "" : this.nome;
+		String n2 = (t.nome == null) ? "" : t.nome;
+
+		return n1.equalsIgnoreCase(n2) && getAnoVencimento() == t.getAnoVencimento();
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(nome.toLowerCase(), getAnoVencimento());
+		String n = (nome == null) ? "" : nome.toLowerCase();
+		return Objects.hash(n, getAnoVencimento());
 	}
 }

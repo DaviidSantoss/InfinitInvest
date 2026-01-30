@@ -1,127 +1,179 @@
 # InfinitInvest
 
-Aplicativo de gerenciamento financeiro e de investimentos com interface moderna em JavaFX, autenticação com verificação por e-mail e armazenamento local via SQLite.
-Atualmente permite cadastro, login seguro e opção de manter o usuário conectado.
+Aplicativo desktop de **gerenciamento financeiro e de investimentos**, desenvolvido em **Java** com **JavaFX**, seguindo o padrão **MVC**, autenticação com **verificação por e-mail**, integração com **APIs de mercado financeiro** e armazenamento local via **SQLite**.
 
-# 🚀 Objetivo do Projeto
+O projeto está funcional e finalizado em sua primeira versão estável, sendo utilizado como **portfólio** e também para **uso pessoal**.
 
-O InfinitInvest nasceu como um projeto de portfólio e uso pessoal, com a proposta de oferecer funcionalidades que ainda não encontrei em softwares de gestão de investimentos.
-Meu objetivo é criar uma ferramenta robusta para acompanhamento de ativos e organização financeira, sem depender de soluções fechadas.
+---
 
-# ✨ Funcionalidades Atuais
+## 🚀 Objetivo do Projeto
 
-Cadastro de usuário com nome, e-mail e senha.
+O **InfinitInvest** nasceu da necessidade de ter uma ferramenta mais flexível e transparente para acompanhamento de investimentos, sem depender exclusivamente de plataformas fechadas.
 
-Verificação de e-mail via código enviado automaticamente ao endereço fornecido.
+O foco do projeto é:
 
-Armazenamento local seguro utilizando SQLite.
+* Consolidar dados de investimentos em um único lugar
+* Exercitar boas práticas de arquitetura e organização de código
+* Criar uma base sólida para futuras evoluções
 
-Login com opção "Continuar conectado" (mantém o usuário logado nas próximas aberturas do app).
+---
 
-Interface gráfica moderna utilizando JavaFX.
+## ✨ Funcionalidades Implementadas
 
-# 🛠 Tecnologias e Bibliotecas Utilizadas
+* Cadastro de usuário com nome, e-mail e senha
+* Verificação de e-mail via código enviado automaticamente
+* Login seguro com opção **"Manter conectado"**
+* Persistência de dados local utilizando **SQLite**
+* Interface gráfica moderna em **JavaFX**
+* Arquitetura **MVC (Model–View–Controller)**
 
-Linguagem: Java 24
+### 📊 Gestão de Investimentos
 
-Frameworks/Bancos: JavaFX, SQLite
+* Cadastro e controle de ativos (ações, FIIs, ETFs, entre outros)
+* Registro de preço pago, preço médio e quantidade de cotas
+* Distribuição do patrimônio por categoria e por ativo
+* Visão consolidada do patrimônio total
 
-Dependências:
+### 👤 Experiência do Usuário
 
-angus-mail-2.0.3
+* Perfil do usuário com foto
+* Aba de anotações para registro de ideias, lembretes e observações financeiras
 
-jakarta-activation-api-2.1.3
+---
 
-jakarta.mail-api-2.1.3
+## 🛠 Tecnologias e Bibliotecas Utilizadas
 
-javafx.base
+**Linguagem:**
 
-javafx.controls
+* Java 24
 
-javafx.fxml
+**Interface & Persistência:**
 
-javafx.graphics
+* JavaFX
+* SQLite
 
-javafx.media
+**Arquitetura:**
 
-javafx.swing
+* MVC (Model–View–Controller)
 
-javafx.web
+**APIs Externas:**
 
-javafx-swt
+* EODHD (dados financeiros)
+* Brapi (dados do mercado brasileiro)
+* LogoKit (logos de ativos)
 
-jdk.jsobject
+**Principais Dependências:**
 
-jfx.incubator.input
+* angus-mail-2.0.3
+* jakarta-activation-api-2.1.3
+* jakarta.mail-api-2.1.3
+* sqlite-jdbc-3.50.2.0
+* json.20231013.richtext
+* Módulos JavaFX (controls, fxml, graphics, etc.)
 
-json.20231013.richtext
+---
 
-sqlite-jdbc-3.50.2.0
+## 🔑 Configurações Obrigatórias (APIs e Serviços)
 
-# 🔮 Funcionalidades Futuras
+Para executar o projeto corretamente, é necessário configurar **tokens e caminhos locais** nas classes abaixo:
 
-Cadastro e controle de ativos: ações, FIIs, ETFs, entre outros.
+### 📊 Classe `Brapi`
 
-Registro de preço pago, preço médio e quantidade de cotas.
+Configure os tokens das APIs financeiras:
 
-Distribuição do patrimônio por categoria/ativo.
-
-Visão geral do patrimônio total.
-
-Logout e troca de contas.
-
-Perfil do usuário com foto e nome.
-
-Aba de anotações estilo editor de texto para registro de ideias ou lembretes.
-
-Entre outras coisas.
-
-# 📦 Como Executar o Projeto
-
-### 1-Pré-requisitos:
-
-Java 24 instalado (JDK e JRE compatíveis).
-
-JavaFX SDK configurado no ambiente de execução.
-
-Driver SQLite incluído no classpath.
-
-### 2-Configuração do envio de e-mails (obrigatória para o cadastro funcionar):
-No arquivo responsável pelo envio de códigos, substitua os valores:
 ```java
-final String remetente = "seu_email@provedor.com";
-```
-```java
-final String senhaApp = "sua_senha_de_app";
+private static final String EODHD_TOKEN = "SEU_TOKEN_EODHD";
+private static final String TOKEN = "SEU_TOKEN_BRAPI";
 ```
 
-### 💡 Recomendo o uso do Zoho Mail ou outro provedor que permita senha de aplicativo.
+---
 
-### 3-Rodando o projeto no Eclipse:
+### 🖼 Classe `LogoKit`
 
-Importe o projeto.
-
-Adicione as bibliotecas listadas acima ao Modulepath.
-
-Configure a execução com as opções do JavaFX:
+Configure o token da API de logos:
 
 ```java
+private static final String TOKEN = "SEU_TOKEN_LOGOKIT";
+```
+
+---
+
+### 🏦 Classe `TesouroDataLoader`
+
+Informe o caminho do arquivo CSV na sua máquina:
+
+```java
+private static final Path ARQUIVO_CSV = Paths.get("C:/SEU_CAMINHO/arquivo.csv");
+```
+
+---
+
+### ✉️ Classe `CodigoVerific`
+
+Para que a verificação por e-mail funcione, é necessário configurar um e-mail com **senha de aplicativo** (recomendado: Zoho Mail):
+
+```java
+final String remetente = "SEU_EMAIL";
+final String senhaApp = "SENHA_DE_APLICATIVO";
+```
+
+---
+
+## 📦 Como Executar o Projeto
+
+### 1️⃣ Pré-requisitos
+
+* Java 24 (JDK e JRE)
+* JavaFX SDK configurado
+* Driver SQLite no classpath
+* Conexão com a internet (para envio de e-mails e consumo de APIs)
+
+---
+
+### 2️⃣ Executando no Eclipse
+
+1. Importe o projeto no Eclipse
+2. Adicione todas as bibliotecas ao **Modulepath**
+3. Configure as opções de execução do JavaFX:
+
+```bash
 --module-path "caminho/do/javafx-sdk/lib" --add-modules javafx.controls,javafx.fxml
 ```
 
-Execute a classe principal (MainApp).
+4. Execute a classe principal (`MainApp`)
 
-# 📌 Observações
+---
 
-O envio de código por e-mail só funcionará após configurar seu e-mail e senha no código.
+## 📌 Observações Importantes
 
-Certifique-se de ter conexão com a internet para o envio de códigos.
+* O envio de códigos por e-mail só funcionará após a configuração correta do e-mail e da senha de aplicativo
+* As APIs externas exigem tokens válidos
+* O projeto foi desenvolvido para ambiente desktop
+* Em sistemas sem aceleração gráfica adequada, o JavaFX pode exigir ajustes adicionais
 
-Em sistemas sem suporte gráfico adequado, o JavaFX pode precisar de configuração extra para renderização.
+### 📈 Sobre o cálculo de rendimento mensal
 
-# 👤 Autor
+O rendimento mensal exibido no sistema é uma **estimativa** baseada nos dividendos dos últimos 12 meses.
 
-David – Desenvolvedor e investidor, apaixonado por programação, economia e soluções inovadoras.
+O cálculo funciona da seguinte forma:
 
+* Soma-se o total de dividendos pagos pelo ativo nos últimos 12 meses
+* Esse valor é dividido por 12, obtendo uma média mensal
 
+Exemplo:
 
+* Se um ativo possui **15% de Dividend Yield ao ano**, o rendimento mensal estimado será de aproximadamente **1,25% ao mês**, sempre em relação ao valor investido.
+
+---
+
+## 🔮 Próximas Evoluções Planejadas
+
+* Cálculo de rentabilidade ponderada da carteira
+* Cálculo aproximado do rendimento mensal dos investimentos
+
+---
+
+## 👤 Autor
+
+**David**
+Desenvolvedor e investidor, apaixonado por programação, economia e soluções inovadoras.

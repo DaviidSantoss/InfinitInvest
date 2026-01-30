@@ -1,0 +1,594 @@
+{
+  "BBAS3": {
+    "data": [
+      {
+        "date": "2025-03-11",
+        "unadjustedValue": 0.64042,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-03-20",
+        "value": 0.64042
+      },
+      {
+        "date": "2025-06-02",
+        "unadjustedValue": 0.42471,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-06-12",
+        "value": 0.42471
+      },
+      {
+        "date": "2025-12-01",
+        "unadjustedValue": 0.07193,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-11",
+        "value": 0.07193
+      },
+      {
+        "date": "2025-12-02",
+        "unadjustedValue": 0.04583,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-12",
+        "value": 0.04583
+      }
+    ],
+    "fetchedAt": 1769726214859,
+    "hadData": true
+  },
+  "VGHF11": {
+    "data": [
+      {
+        "date": "2025-01-31",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-02-07",
+        "value": 0.09
+      },
+      {
+        "date": "2025-02-28",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-03-11",
+        "value": 0.09
+      },
+      {
+        "date": "2025-03-31",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-04-07",
+        "value": 0.09
+      },
+      {
+        "date": "2025-04-30",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-05-08",
+        "value": 0.09
+      },
+      {
+        "date": "2025-05-30",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-06-06",
+        "value": 0.09
+      },
+      {
+        "date": "2025-06-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-07-07",
+        "value": 0.1
+      },
+      {
+        "date": "2025-07-31",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-08-07",
+        "value": 0.09
+      },
+      {
+        "date": "2025-08-29",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-09-05",
+        "value": 0.09
+      },
+      {
+        "date": "2025-09-30",
+        "unadjustedValue": 0.08,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-10-07",
+        "value": 0.08
+      },
+      {
+        "date": "2025-10-31",
+        "unadjustedValue": 0.07,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-11-07",
+        "value": 0.07
+      },
+      {
+        "date": "2025-11-28",
+        "unadjustedValue": 0.07,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-05",
+        "value": 0.07
+      },
+      {
+        "date": "2025-12-30",
+        "unadjustedValue": 0.07,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-01-08",
+        "value": 0.07
+      }
+    ],
+    "fetchedAt": 1769726372828,
+    "hadData": true
+  },
+  "VALE3": {
+    "data": [
+      {
+        "date": "2025-03-07",
+        "unadjustedValue": 2.14185,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-03-14",
+        "value": 2.14185
+      },
+      {
+        "date": "2025-08-12",
+        "unadjustedValue": 1.89539,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-09-03",
+        "value": 1.89539
+      },
+      {
+        "date": "2025-12-11",
+        "unadjustedValue": 3.58177,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-03-04",
+        "value": 3.58177
+      }
+    ],
+    "fetchedAt": 1769726256151,
+    "hadData": true
+  },
+  "BBDC3": {
+    "data": [
+      {
+        "date": "2025-02-03",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-03-05",
+        "value": 0.01725
+      },
+      {
+        "date": "2025-03-05",
+        "unadjustedValue": 0.02374,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-04-01",
+        "value": 0.02374
+      },
+      {
+        "date": "2025-03-31",
+        "unadjustedValue": 0.20711,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-10-31",
+        "value": 0.20711
+      },
+      {
+        "date": "2025-04-01",
+        "unadjustedValue": 0.02374,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-05-02",
+        "value": 0.02374
+      },
+      {
+        "date": "2025-05-02",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-06-02",
+        "value": 0.01725
+      },
+      {
+        "date": "2025-06-02",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-07-01",
+        "value": 0.01725
+      },
+      {
+        "date": "2025-06-30",
+        "unadjustedValue": 0.27015,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-01-31",
+        "value": 0.27015
+      },
+      {
+        "date": "2025-07-01",
+        "unadjustedValue": 0.02374,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-08-01",
+        "value": 0.02374
+      },
+      {
+        "date": "2025-08-01",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-09-01",
+        "value": 0.01725
+      },
+      {
+        "date": "2025-09-01",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-10-01",
+        "value": 0.01725
+      },
+      {
+        "date": "2025-09-29",
+        "unadjustedValue": 0.27015,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-04-30",
+        "value": 0.27015
+      },
+      {
+        "date": "2025-10-01",
+        "unadjustedValue": 0.02374,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-11-03",
+        "value": 0.02374
+      },
+      {
+        "date": "2025-11-03",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-01",
+        "value": 0.01725
+      },
+      {
+        "date": "2025-12-01",
+        "unadjustedValue": 0.02374,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-01-02",
+        "value": 0.02374
+      },
+      {
+        "date": "2025-12-29",
+        "unadjustedValue": 0.35119,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-07-31",
+        "value": 0.35119
+      }
+    ],
+    "fetchedAt": 1769726300761,
+    "hadData": true
+  },
+  "PETR4": {
+    "data": [
+      {
+        "date": "2025-04-16",
+        "unadjustedValue": 0.74813,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-06-20",
+        "value": 0.74813
+      },
+      {
+        "date": "2025-06-02",
+        "unadjustedValue": 0.90917,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-08-20",
+        "value": 0.90917
+      },
+      {
+        "date": "2025-08-21",
+        "unadjustedValue": 0.67192,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-22",
+        "value": 0.67192
+      },
+      {
+        "date": "2025-12-22",
+        "unadjustedValue": 0.94321,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-03-20",
+        "value": 0.94321
+      }
+    ],
+    "fetchedAt": 1769726238457,
+    "hadData": true
+  },
+  "CMIG4": {
+    "data": [
+      {
+        "date": "2025-03-26",
+        "unadjustedValue": 0.19,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-12-30",
+        "value": 0.19
+      },
+      {
+        "date": "2025-05-02",
+        "unadjustedValue": 0.66,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-30",
+        "value": 0.66
+      },
+      {
+        "date": "2025-09-30",
+        "unadjustedValue": 0.21,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-12-30",
+        "value": 0.21
+      },
+      {
+        "date": "2025-12-23",
+        "unadjustedValue": 0.15,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-30",
+        "value": 0.15
+      },
+      {
+        "date": "2025-12-26",
+        "unadjustedValue": 0.24,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-12-30",
+        "value": 0.24
+      }
+    ],
+    "fetchedAt": 1769726275945,
+    "hadData": true
+  },
+  "MXRF11": {
+    "data": [
+      {
+        "date": "2025-01-31",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-02-14",
+        "value": 0.09
+      },
+      {
+        "date": "2025-02-28",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-03-18",
+        "value": 0.09
+      },
+      {
+        "date": "2025-03-31",
+        "unadjustedValue": 0.09,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-04-14",
+        "value": 0.09
+      },
+      {
+        "date": "2025-04-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-05-15",
+        "value": 0.1
+      },
+      {
+        "date": "2025-05-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-06-13",
+        "value": 0.1
+      },
+      {
+        "date": "2025-06-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-07-14",
+        "value": 0.1
+      },
+      {
+        "date": "2025-07-31",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-08-14",
+        "value": 0.1
+      },
+      {
+        "date": "2025-08-29",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-09-12",
+        "value": 0.1
+      },
+      {
+        "date": "2025-09-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-10-14",
+        "value": 0.1
+      },
+      {
+        "date": "2025-10-31",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-11-14",
+        "value": 0.1
+      },
+      {
+        "date": "2025-11-28",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2025-12-12",
+        "value": 0.1
+      },
+      {
+        "date": "2025-12-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-01-15",
+        "value": 0.1
+      }
+    ],
+    "fetchedAt": 1769726327251,
+    "hadData": true
+  }
+}

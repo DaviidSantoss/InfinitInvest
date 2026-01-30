@@ -31,6 +31,13 @@ import javafx.util.Duration;
 
 public class PesquisaController {
 
+	// ==========================================================
+	// CONTEXTO DO CONTROLLER
+	// ==========================================================
+	// Controla a busca/autocomplete de ativos.
+	// Faz debounce da digitação, consulta API, renderiza resultados com logo e preço
+	// e abre o ativo no TradingView ao selecionar.
+
 	private final PauseTransition debounce = new PauseTransition(Duration.millis(250));
 	private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -39,10 +46,18 @@ public class PesquisaController {
 
 	private Future<?> currentTask;
 
+	// ==========================================================
+	// API PÚBLICA
+	// ==========================================================
+
 	public void configurar(TextField searchField) {
 		configurarPopup(searchField);
 		configurarEventos(searchField);
 	}
+
+	// ==========================================================
+	// POPUP / LISTA
+	// ==========================================================
 
 	private void configurarPopup(TextField searchField) {
 		listView.setPrefWidth(350);
@@ -76,6 +91,10 @@ public class PesquisaController {
 			}
 		});
 	}
+
+	// ==========================================================
+	// EVENTOS / NAVEGAÇÃO
+	// ==========================================================
 
 	private void configurarEventos(TextField searchField) {
 		searchField.textProperty().addListener((obs, old, val) -> {
@@ -131,6 +150,10 @@ public class PesquisaController {
 		});
 	}
 
+	// ==========================================================
+	// BUSCA
+	// ==========================================================
+
 	private void buscarEExibir(TextField searchField, String query) {
 		if (currentTask != null)
 			currentTask.cancel(true);
@@ -140,7 +163,6 @@ public class PesquisaController {
 				List<String> resultados = Brapi.buscarAtivosPorTipo(Brapi.AssetType.UNKNOWN, query);
 
 				String qUp = query.trim().toUpperCase();
-
 				if (queryEhTickerCompleto(qUp)) {
 					resultados = resultados.stream().filter(line -> extrairTickerDaLinha(line).equals(qUp)).toList();
 				}
@@ -165,6 +187,10 @@ public class PesquisaController {
 			}
 		});
 	}
+
+	// ==========================================================
+	// POSICIONAMENTO DO POPUP
+	// ==========================================================
 
 	private void mostrarPopupAbaixo(TextField searchField) {
 		if (searchField.getScene() == null)
@@ -191,6 +217,10 @@ public class PesquisaController {
 		listView.setPrefWidth(searchField.getWidth());
 	}
 
+	// ==========================================================
+	// AÇÃO: ABRIR NO TRADINGVIEW
+	// ==========================================================
+
 	private void abrirAtivo(String item) {
 		String ticker = extrairTicker(item);
 
@@ -211,6 +241,10 @@ public class PesquisaController {
 		} catch (Exception ignored) {
 		}
 	}
+
+	// ==========================================================
+	// PARSING
+	// ==========================================================
 
 	private String extrairTicker(String s) {
 		if (s == null)
@@ -241,9 +275,31 @@ public class PesquisaController {
 		return parts.length > 0 ? parts[0].toUpperCase() : x.toUpperCase();
 	}
 
-	// =========================
-	// Cell com crop/zoom do logo
-	// =========================
+	private boolean queryEhTickerCompleto(String q) {
+		if (q == null)
+			return false;
+		return q.trim().toUpperCase().matches("^[A-Z]{4}\\d{1,2}$");
+	}
+
+	private String extrairTickerDaLinha(String item) {
+		if (item == null)
+			return "";
+		int dash = item.indexOf(" - ");
+		String left = (dash > 0) ? item.substring(0, dash).trim() : item.trim();
+
+		if (left.contains("(") && left.contains(")")) {
+			int a = left.lastIndexOf('(');
+			int b = left.lastIndexOf(')');
+			if (a >= 0 && b > a)
+				return left.substring(a + 1, b).trim().toUpperCase();
+		}
+		return left.toUpperCase();
+	}
+
+	// ==========================================================
+	// CELL (logo com crop/zoom + preço async)
+	// ==========================================================
+
 	private static class ResultadoCell extends ListCell<String> {
 
 		private final HBox root = new HBox(8);
@@ -255,7 +311,7 @@ public class PesquisaController {
 
 		private boolean hovering = false;
 
-		// ✅ ajuste aqui o “zoom” (quanto maior, mais ele corta borda branca)
+		// ajuste o “zoom” (quanto maior, mais ele corta borda branca)
 		private static final double LOGO_ZOOM = 1.65;
 
 		ResultadoCell() {
@@ -326,7 +382,6 @@ public class PesquisaController {
 			if (w <= 0 || h <= 0)
 				return;
 
-			// viewport menor => "zoom" no centro
 			double vw = w / zoom;
 			double vh = h / zoom;
 
@@ -361,7 +416,6 @@ public class PesquisaController {
 			tName.setText(nome);
 			tPrice.setText("Carregando preço...");
 
-			// reset logo antes de carregar
 			logo.setImage(null);
 			logo.setViewport(null);
 
@@ -371,7 +425,7 @@ public class PesquisaController {
 				if (getItem() != null && getItem().equals(itemFinal)) {
 					if (img != null) {
 						logo.setImage(img);
-						aplicarCropCentral(img, LOGO_ZOOM); // ✅ aqui remove borda branca
+						aplicarCropCentral(img, LOGO_ZOOM);
 					}
 				}
 			}));
@@ -393,26 +447,5 @@ public class PesquisaController {
 
 			setGraphic(root);
 		}
-	}
-
-	private boolean queryEhTickerCompleto(String q) {
-		if (q == null)
-			return false;
-		return q.trim().toUpperCase().matches("^[A-Z]{4}\\d{1,2}$");
-	}
-
-	private String extrairTickerDaLinha(String item) {
-		if (item == null)
-			return "";
-		int dash = item.indexOf(" - ");
-		String left = (dash > 0) ? item.substring(0, dash).trim() : item.trim();
-
-		if (left.contains("(") && left.contains(")")) {
-			int a = left.lastIndexOf('(');
-			int b = left.lastIndexOf(')');
-			if (a >= 0 && b > a)
-				return left.substring(a + 1, b).trim().toUpperCase();
-		}
-		return left.toUpperCase();
 	}
 }

@@ -16,18 +16,33 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
-	private LoginForm login;
+	// ==========================================================
+	// CONTEXTO DO CONTROLLER
+	// ==========================================================
+	// Controla o fluxo de login.
+	// Valida credenciais, gerencia sessão (memória + persistência) e navega para a tela principal.
+
+	private final LoginForm login;
 	@SuppressWarnings("unused")
-	private LoginBackground background;
+	private final LoginBackground background;
 	@SuppressWarnings("unused")
-	private Dao dao;
-	private SessaoDAO sessaoDAO = new SessaoDAO();
+	private final Dao dao;
+
+	private final SessaoDAO sessaoDAO = new SessaoDAO();
+
+	// ==========================================================
+	// CONSTRUTOR
+	// ==========================================================
 
 	public LoginController(LoginForm login, LoginBackground background) throws IOException, SQLException {
 		this.login = login;
 		this.background = background;
 		this.dao = new Dao();
 	}
+
+	// ==========================================================
+	// CONFIGURAÇÕES DE UI
+	// ==========================================================
 
 	public void configuraracoes() throws IOException {
 
@@ -39,34 +54,40 @@ public class LoginController {
 				Usuario usuario = Dao.buscarPorEmail(emailDigitado);
 
 				if (usuario != null) {
+
 					String senhaArmazenada = usuario.getSenhaHash();
 
 					if (senhaDigitada.equals(senhaArmazenada)) {
 
-						// 🔹 Sempre seta o usuário logado na sessão em memória
+						// sessão em memória
 						SessaoTemp.setUsuarioLogado(usuario);
 
+						// sessão persistente (manter conectado)
+						Preferences prefs = Preferences.userNodeForPackage(LoginController.class);
+
 						if (login.getCheckBox().isSelected()) {
-							// 🔹 Se o usuário quiser manter logado, salva no banco
+
 							sessaoDAO.salvarSessao(usuario.getId());
 
-							Preferences prefs = Preferences.userNodeForPackage(LoginController.class);
-							prefs.put("emailUsuario", login.getEmailField().getText().trim());
+							prefs.put("emailUsuario", emailDigitado.trim());
 							prefs.putBoolean("manterConectado", true);
+
 						} else {
-							// 🔹 Caso contrário, limpa a sessão persistente
+
 							sessaoDAO.limparSessao();
-							Preferences prefs = Preferences.userNodeForPackage(LoginController.class);
+
 							prefs.remove("emailUsuario");
 							prefs.putBoolean("manterConectado", false);
 						}
 
-						// 🔹 Troca de tela
+						// troca de tela
 						Stage stageAtual = (Stage) login.getLogar().getScene().getWindow();
 						Principal principal = new Principal();
 						Scene cenaPrincipal = new Scene(principal);
+
 						stageAtual.setScene(cenaPrincipal);
 						stageAtual.setMaximized(true);
+
 						login.getErro().setVisible(false);
 
 						System.out.println("✅ Login realizado com sucesso para: " + usuario.getNome());
@@ -75,6 +96,7 @@ public class LoginController {
 						System.out.println("❌ Senha incorreta");
 						login.getErro().setVisible(true);
 					}
+
 				} else {
 					System.out.println("❌ Usuário não encontrado");
 					login.getErro().setVisible(true);
@@ -84,8 +106,12 @@ public class LoginController {
 				ex.printStackTrace();
 			}
 		});
-
 	}
+
+	// ==========================================================
+	// SESSÃO
+	// ==========================================================
+	// Verifica se existe sessão persistida no banco (manter conectado).
 
 	public static boolean verificarSessaoSalva() {
 		try {

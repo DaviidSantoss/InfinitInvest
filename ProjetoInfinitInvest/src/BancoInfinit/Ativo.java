@@ -2,6 +2,16 @@ package BancoInfinit;
 
 public class Ativo {
 
+	// ==========================================================
+	// CONTEXTO DO MODELO
+	// ==========================================================
+	// Representa um ativo da carteira (ações/FIIs/ETFs/cripto) e também
+	// guarda metadados para Tesouro Direto e Renda Fixa (para cálculo de rendimento).
+	// Mantém construtores retrocompatíveis para não quebrar o DAO atual.
+
+	// ==========================================================
+	// CAMPOS PRINCIPAIS (CARTEIRA)
+	// ==========================================================
 	private int id;
 	private int usuarioId;
 	private String categoria;
@@ -14,31 +24,42 @@ public class Ativo {
 	private double variacao;
 	private double saldo;
 
-	// Renda fixa (como você já fez)
+	// ==========================================================
+	// CAMPOS LEGADOS (RENDA FIXA - UI ANTIGA)
+	// ==========================================================
 	@SuppressWarnings("unused")
 	private double rentabilidade;
+
 	@SuppressWarnings("unused")
 	private boolean isRendaFixa;
 
-	// ===== Tesouro Direto (NOVO) =====
-	private String tdIndexador; // "SELIC", "PREFIXADO", "IPCA+", "RENDA+", "EDUCA+"
-	private double tdTaxaAnual; // ex: 0.1188
-	private double tdPrincipal; // base
-	private String tdUltimoDia; // "2026-01-08"
-	// ===== Renda Fixa (NOVO - meta de atualização diária) =====
-	private String rfIndexador; // "CDI", "CDI+", "IPCA+"
-	private String rfForma; // "pré-fixado", "pós-fixado" (ou "PRE"/"POS"/"HIBRIDO")
-	private double rfTaxaAnual; // ex: 0.155 (15,5% a.a.) OU taxa real do IPCA+
-	private double rfPrincipal; // total aportado (base)
-	private String rfUltimoDia; // "2026-01-22"
+	// ==========================================================
+	// TESOURO DIRETO (META / ATUALIZAÇÃO)
+	// ==========================================================
+	private String tdIndexador;
+	private double tdTaxaAnual;
+	private double tdPrincipal;
+	private String tdUltimoDia;
 
-	// opcionais (CDI+ bem feito)
+	// ==========================================================
+	// RENDA FIXA (META / ATUALIZAÇÃO)
+	// ==========================================================
+	private String rfIndexador;
+	private String rfForma;
+	private double rfTaxaAnual;
+	private double rfPrincipal;
+	private String rfUltimoDia;
+
+	// Opcionais (para CDI+ “bem feito”)
 	private double rfPercentIndexador; // ex: 1.00 (100% CDI)
 	private double rfSpreadAnual; // ex: 0.02 (2% a.a.)
 
-	// Construtor antigo continua existindo (pra não quebrar)
-	public Ativo(int id, int usuarioId, String categoria, String ativo, String iconUrl, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo) {
+	// ==========================================================
+	// CONSTRUTORES
+	// ==========================================================
 
+	// Construtor base (legado) — mantém compatibilidade com DAO antigo.
+	public Ativo(int id, int usuarioId, String categoria, String ativo, String iconUrl, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo) {
 		this.id = id;
 		this.usuarioId = usuarioId;
 		this.categoria = categoria;
@@ -51,25 +72,24 @@ public class Ativo {
 		this.variacao = variacao;
 		this.saldo = saldo;
 
+		// comportamento legado: para “Renda Fixa”, quantidade vinha como rentabilidade (%)
 		if ("Renda Fixa".equalsIgnoreCase(categoria)) {
 			this.isRendaFixa = true;
 			this.rentabilidade = quantidade;
 		}
 	}
 
-	// Construtor NOVO (com campos do Tesouro)
+	// Construtor com Tesouro Direto.
 	public Ativo(int id, int usuarioId, String categoria, String ativo, String iconUrl, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo, String tdIndexador,
 			double tdTaxaAnual, double tdPrincipal, String tdUltimoDia) {
-
 		this(id, usuarioId, categoria, ativo, iconUrl, quantidade, precoMedio, precoAtual, variacao, saldo);
-
 		this.tdIndexador = tdIndexador;
 		this.tdTaxaAnual = tdTaxaAnual;
 		this.tdPrincipal = tdPrincipal;
 		this.tdUltimoDia = tdUltimoDia;
 	}
 
-	// Construtor NOVO (com campos da Renda Fixa meta)
+	// Construtor com Tesouro Direto + Renda Fixa (meta).
 	public Ativo(int id, int usuarioId, String categoria, String ativo, String iconUrl, double quantidade, double precoMedio, double precoAtual, double variacao, double saldo, String tdIndexador,
 			double tdTaxaAnual, double tdPrincipal, String tdUltimoDia, String rfIndexador, String rfForma, double rfTaxaAnual, double rfPrincipal, String rfUltimoDia, double rfPercentIndexador,
 			double rfSpreadAnual) {
@@ -90,7 +110,10 @@ public class Ativo {
 		this.rfSpreadAnual = rfSpreadAnual;
 	}
 
-	// ===== getters existentes =====
+	// ==========================================================
+	// GETTERS (CARTEIRA)
+	// ==========================================================
+
 	public int getId() {
 		return id;
 	}
@@ -131,6 +154,9 @@ public class Ativo {
 		return saldo;
 	}
 
+	// ==========================================================
+	// TESOURO DIRETO (GETTERS/SETTERS)
+	// ==========================================================
 
 	public String getTdIndexador() {
 		return tdIndexador;
@@ -148,7 +174,6 @@ public class Ativo {
 		return tdUltimoDia;
 	}
 
-	// Se quiser setar depois (útil)
 	public void setTdIndexador(String v) {
 		this.tdIndexador = v;
 	}
@@ -164,6 +189,10 @@ public class Ativo {
 	public void setTdUltimoDia(String v) {
 		this.tdUltimoDia = v;
 	}
+
+	// ==========================================================
+	// RENDA FIXA (GETTERS)
+	// ==========================================================
 
 	public String getRfIndexador() {
 		return rfIndexador;
@@ -192,5 +221,4 @@ public class Ativo {
 	public double getRfSpreadAnual() {
 		return rfSpreadAnual;
 	}
-
 }

@@ -43,18 +43,30 @@ import javafx.stage.Window;
 
 public class ImportarEexportarController {
 
-	// Formato simples e robusto (TSV dentro de ZIP)
+	// ==========================================================
+	// CONTEXTO DO CONTROLLER
+	// ==========================================================
+	// Importa e exporta dados do usuário em um formato simples e robusto.
+	// Export: gera um .infinit (ZIP) com TSVs + anotações + foto.
+	// Import: aplica o backup no usuário logado (sem alterar email/senha).
+
+	// ==========================================================
+	// FORMATO / ENTRIES
+	// ==========================================================
+
 	private static final String EXT = "*.infinit";
 	private static final String DEFAULT_NAME_PREFIX = "backup_infinit_";
+
 	private static final String ENTRY_META = "meta.tsv";
 	private static final String ENTRY_ATIVOS = "ativos.tsv";
 	private static final String ENTRY_LANC = "lancamentos.tsv";
 	private static final String ENTRY_ANOT = "anotacoes.txt";
 	private static final String ENTRY_FOTO = "foto.png";
 
-	// =========================
-	// API pública (chamar de qualquer tela)
-	// =========================
+	// ==========================================================
+	// API PÚBLICA
+	// ==========================================================
+
 	public void abrirPopup(Window owner) {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
@@ -90,9 +102,10 @@ public class ImportarEexportarController {
 		stage.showAndWait();
 	}
 
-	// =========================
+	// ==========================================================
 	// EXPORT
-	// =========================
+	// ==========================================================
+
 	private void exportar(Window owner) {
 		Integer usuarioId = SessaoTemp.getUsuarioId();
 		if (usuarioId == null) {
@@ -131,7 +144,7 @@ public class ImportarEexportarController {
 			List<Ativo> ativos = Dao.listarAtivosPorUsuario(usuarioId);
 			List<Dao.Lancamento> lancs = dao.listarLancamentos(usuarioId);
 			String anotacoes = dao.carregarAnotacoes(usuarioId);
-			byte[] foto = dao.getImagem(usuarioId); // pode ser null
+			byte[] foto = dao.getImagem(usuarioId);
 
 			try (OutputStream fos = java.nio.file.Files.newOutputStream(out.toPath()); ZipOutputStream zos = new ZipOutputStream(fos, StandardCharsets.UTF_8)) {
 
@@ -139,7 +152,7 @@ public class ImportarEexportarController {
 				writeEntry(zos, ENTRY_META, w -> {
 					w.write("version\t1\n");
 					w.write("exported_at\t" + LocalDateTime.now() + "\n");
-					w.write("usuario_id_origem\t" + usuarioId + "\n"); // só informativo
+					w.write("usuario_id_origem\t" + usuarioId + "\n");
 					w.write("nome\t" + safe(u.getNome()) + "\n");
 				});
 
@@ -163,10 +176,11 @@ public class ImportarEexportarController {
 					}
 				});
 
-				// LANCAMENTOS (TSV)
+				// LANÇAMENTOS (TSV)
 				writeEntry(zos, ENTRY_LANC, w -> {
 					w.write(String.join("\t", "categoria", "ativo", "quantidade", "preco_unit", "data_lancamento_iso"));
 					w.write("\n");
+
 					for (Dao.Lancamento l : lancs) {
 						w.write(String.join("\t", safe(l.categoria), safe(l.ativo), d(l.quantidade), d(l.precoUnitario), safe(l.dataLancamentoIso)));
 						w.write("\n");
@@ -181,7 +195,7 @@ public class ImportarEexportarController {
 					writeEntry(zos, ENTRY_FOTO, foto);
 				}
 
-				zos.finish(); // opcional (legal)
+				zos.finish();
 			}
 
 			alert(AlertType.INFORMATION, "Export concluído ✅", "Backup salvo em:\n" + out.getAbsolutePath());
@@ -192,9 +206,10 @@ public class ImportarEexportarController {
 		}
 	}
 
-	// =========================
+	// ==========================================================
 	// IMPORT
-	// =========================
+	// ==========================================================
+
 	private void importar(Window owner) {
 		Integer usuarioId = SessaoTemp.getUsuarioId();
 		if (usuarioId == null) {
@@ -209,12 +224,13 @@ public class ImportarEexportarController {
 		if (in == null)
 			return;
 
-		// Confirma sobrescrita
 		ButtonType ok = new ButtonType("Aplicar (sobrescrever)", ButtonData.OK_DONE);
 		ButtonType cancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
+
 		Alert confirm = new Alert(AlertType.WARNING, "Isso vai substituir os dados do usuário logado (ativos, lançamentos e anotações).\n" + "Email/senha NÃO serão alterados.\n\nContinuar?", ok,
 				cancel);
 		confirm.setTitle("Confirmar Import");
+
 		var res = confirm.showAndWait();
 		if (res.isEmpty() || res.get() != ok)
 			return;
@@ -226,29 +242,24 @@ public class ImportarEexportarController {
 			List<String[]> ativosRows = readTsv(zip, ENTRY_ATIVOS);
 			List<String[]> lancRows = readTsv(zip, ENTRY_LANC);
 			String anotacoes = readText(zip, ENTRY_ANOT);
-			byte[] foto = readBytes(zip, ENTRY_FOTO); // pode ser null
+			byte[] foto = readBytes(zip, ENTRY_FOTO);
 
 			Dao dao = new Dao();
 
-			// Atualiza nome (se tiver)
 			String nomeBackup = meta.getOrDefault("nome", "");
 			if (!nomeBackup.isBlank()) {
 				dao.updateNome(usuarioId, nomeBackup);
 			}
 
-			// Atualiza foto (se tiver)
 			if (foto != null && foto.length > 0) {
 				dao.atualizarImagem(usuarioId, foto);
 			}
 
-			// 1) limpa dados do usuário atual
 			limparDadosUsuario(usuarioId);
 
-			// 2) insere tudo do backup
 			inserirAtivosDoBackup(usuarioId, ativosRows);
 			inserirLancamentosDoBackup(usuarioId, lancRows);
 
-			// 3) anotações
 			dao.salvarAnotacoes(usuarioId, anotacoes == null ? "" : anotacoes);
 
 			alert(AlertType.INFORMATION, "Import concluído ✅", "Dados aplicados no usuário logado com sucesso.");
@@ -259,9 +270,10 @@ public class ImportarEexportarController {
 		}
 	}
 
-	// =========================
-	// DB helpers
-	// =========================
+	// ==========================================================
+	// DB HELPERS
+	// ==========================================================
+
 	private void limparDadosUsuario(int usuarioId) throws Exception {
 		try (Connection conn = Conexao.getInstance().getConnection()) {
 
@@ -325,19 +337,19 @@ public class ImportarEexportarController {
 			double rfPercentIndexador, double rfSpreadAnual) throws Exception {
 
 		String sql = """
-				    INSERT INTO ativos (
-				        usuario_id, categoria, ativo, iconUrl,
-				        quantidade, preco_medio, preco_atual, variacao, saldo,
-				        td_indexador, td_taxa_anual, td_principal, td_ultimo_dia,
-				        rf_indexador, rf_forma, rf_taxa_anual, rf_principal, rf_ultimo_dia,
-				        rf_percent_indexador, rf_spread_anual
-				    ) VALUES (
-				        ?, ?, ?, ?,
-				        ?, ?, ?, ?, ?,
-				        ?, ?, ?, ?,
-				        ?, ?, ?, ?, ?,
-				        ?, ?
-				    )
+				INSERT INTO ativos (
+					usuario_id, categoria, ativo, iconUrl,
+					quantidade, preco_medio, preco_atual, variacao, saldo,
+					td_indexador, td_taxa_anual, td_principal, td_ultimo_dia,
+					rf_indexador, rf_forma, rf_taxa_anual, rf_principal, rf_ultimo_dia,
+					rf_percent_indexador, rf_spread_anual
+				) VALUES (
+					?, ?, ?, ?,
+					?, ?, ?, ?, ?,
+					?, ?, ?, ?,
+					?, ?, ?, ?, ?,
+					?, ?
+				)
 				""";
 
 		try (Connection conn = Conexao.getInstance().getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -393,16 +405,14 @@ public class ImportarEexportarController {
 		}
 	}
 
-	// =========================
-	// ZIP helpers
-	// =========================
+	// ==========================================================
+	// ZIP HELPERS
+	// ==========================================================
+
 	private interface EntryWriter {
 		void write(Writer w) throws Exception;
 	}
 
-	/**
-	 * ✅ ESCRITA SEGURA: Escreve primeiro em memória e só depois grava como entry no ZIP. Assim você pode usar Writer sem risco de fechar o ZipOutputStream.
-	 */
 	private static void writeEntry(ZipOutputStream zos, String entryName, EntryWriter fn) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try (Writer w = new OutputStreamWriter(baos, StandardCharsets.UTF_8)) {
@@ -411,9 +421,6 @@ public class ImportarEexportarController {
 		writeEntry(zos, entryName, baos.toByteArray());
 	}
 
-	/**
-	 * ✅ ESCRITA BAIXO NÍVEL: Nunca fecha o ZipOutputStream. Só abre entry, escreve bytes, fecha entry.
-	 */
 	private static void writeEntry(ZipOutputStream zos, String entryName, byte[] data) throws IOException {
 		ZipEntry entry = new ZipEntry(entryName);
 		zos.putNextEntry(entry);
@@ -476,7 +483,6 @@ public class ImportarEexportarController {
 				sb.append(line).append("\n");
 			}
 		}
-		// remove o último \n extra (opcional)
 		if (sb.length() > 0)
 			sb.setLength(sb.length() - 1);
 		return sb.toString();
@@ -494,9 +500,10 @@ public class ImportarEexportarController {
 		}
 	}
 
-	// =========================
-	// small helpers
-	// =========================
+	// ==========================================================
+	// SMALL HELPERS
+	// ==========================================================
+
 	private void alert(AlertType type, String title, String msg) {
 		Alert a = new Alert(type);
 		a.setTitle(title);

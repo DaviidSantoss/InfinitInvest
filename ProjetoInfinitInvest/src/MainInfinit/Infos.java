@@ -34,16 +34,15 @@ import javafx.scene.paint.Color;
 
 public class Infos extends StackPane {
 
-	private TextField searchField = new TextField(); // barra de pesquisa(não vamos fazer nada com ela por enquanto)
-	private Label PValor = new Label("R$ 279.027,76"); // Valor Patrimonio total(isso valor leva em cosideração a variação dos ativos.)
-	private Label PPorcent = new Label("-1%"); // Porcentagem da variação do patrimonio total.(se for positivo deve ficar verde se for negativo deve ficar vermelho, e ser for neutra deve ficar branco
-	private Label VInvestT = new Label("R$ 280.187,55"); // Valor bruto investido(só leva em consideração o dinheiro bruto investido não conta variação)
-	private Label LValor = new Label("R$ -1.159,79");// Lucro total, leva em consideração a varição em porcentagem ou seja se o usuário tem 1M e os seus ativos subiram 2% essa variável tera que ter o
-														// valor de 20k entende?.
-	private Label VGCapital = new Label("R$ -1.309,79"); // Ganho de capital valor bruto da variação.
-	private Label VariacaoP = new Label("-1,2%"); // Variação (é a relação entre o valor investido e o patrimonio total.
-	private Label VariacaoValor = new Label("R$ -1.309,79"); // Valor bruto da variação.
-	private Label RentabilidadeV = new Label("3,25%");// Rentabilidade pondera de todos os ativos do usuário.
+	private TextField searchField = new TextField();
+	private Label PValor = new Label("R$ 279.027,76");
+	private Label PPorcent = new Label("-1%");
+	private Label VInvestT = new Label("R$ 280.187,55");
+	private Label LValor = new Label("R$ -1.159,79");
+	private Label VGCapital = new Label("R$ -1.309,79");
+	private Label VariacaoP = new Label("-1,2%");
+	private Label VariacaoValor = new Label("R$ -1.309,79");
+	private Label RentabilidadeV = new Label("3,25%");
 	private Button AddInit = new Button("+ Adicionar ativo");
 	private ListaDeAtivos listaDeAtivos = new ListaDeAtivos();
 

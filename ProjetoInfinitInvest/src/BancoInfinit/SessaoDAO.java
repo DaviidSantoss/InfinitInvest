@@ -8,27 +8,41 @@ import java.sql.SQLException;
 
 public class SessaoDAO {
 
-	@SuppressWarnings("resource")
+	// ==========================================================
+	// CONTEXTO DO DAO DE SESSÃO
+	// ==========================================================
+	// Gerencia a sessão do usuário em dois níveis:
+	// - Persistente (tabela "sessao" no SQLite): mantém login entre execuções, se você quiser
+	// - Em memória (SessaoTemp): acesso rápido ao usuário/ID logado durante a execução
+
 	private static Connection conn;
 
+	// ==========================================================
+	// CONSTRUTORES / CONEXÃO
+	// ==========================================================
+
 	public SessaoDAO() throws IOException, SQLException {
-
-		// =============
-		// Iniciando a conexão
-		// =============
 		conn = Conexao.getInstance().getConnection();
-
 	}
 
-	@SuppressWarnings("static-access")
 	public SessaoDAO(Connection conn) {
-		this.conn = conn;
+		SessaoDAO.conn = conn;
 	}
 
-	// =======================
-	// Método para salvar e pegar a sessão.
-	// =======================
+	public Connection getConn() {
+		return conn;
+	}
+
+	public void setConn(Connection conn) {
+		SessaoDAO.conn = conn;
+	}
+
+	// ==========================================================
+	// SESSÃO NO BANCO (TABELA "sessao")
+	// ==========================================================
+
 	public void salvarSessao(int usuarioId) throws SQLException {
+
 		String deleteSql = "DELETE FROM sessao";
 		try (PreparedStatement psDelete = conn.prepareStatement(deleteSql)) {
 			psDelete.executeUpdate();
@@ -41,84 +55,62 @@ public class SessaoDAO {
 		}
 	}
 
-	// =======================
-	// Método para Buscar usuário logado
-	// =======================
-	@SuppressWarnings("resource")
+	public void limparSessao() throws SQLException {
+		String deleteSql = "DELETE FROM sessao";
+		try (PreparedStatement ps = conn.prepareStatement(deleteSql)) {
+			ps.executeUpdate();
+		}
+	}
+
 	public static Integer buscarSessao() throws SQLException {
 		String selectSql = "SELECT usuario_id FROM sessao LIMIT 1";
 		try (PreparedStatement ps = conn.prepareStatement(selectSql)) {
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getInt("usuario_id");
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next())
+					return rs.getInt("usuario_id");
 			}
 		}
 		return null;
 	}
 
-	// =======================
-	// Método para Limpar sessão (logout)
-	// =======================
-	public void limparSessao() throws SQLException {
-        String deleteSql = "DELETE FROM sessao";
-        try (PreparedStatement ps = conn.prepareStatement(deleteSql)) {
-            ps.executeUpdate();
-        }
-	}
+	// ==========================================================
+	// SESSÃO EM MEMÓRIA (RÁPIDA) — USO PELO APP
+	// ==========================================================
 
-	public Connection getConn() {
-		return conn;
-	}
+	public static final class SessaoTemp {
 
-	@SuppressWarnings("static-access")
-	public void setConn(Connection conn) {
-		this.conn = conn;
-	}
-
-	public final class SessaoTemp {
-
-		// Mantém o usuário autenticado apenas em memória
 		private static volatile Usuario usuarioLogado;
 		private static volatile Integer usuarioId;
 
 		private SessaoTemp() {
 		}
 
-		/** Define o usuário logado para a sessão atual (memória). */
 		public static void setUsuarioLogado(Usuario usuario) {
-			SessaoTemp.usuarioLogado = usuario;
-			SessaoTemp.usuarioId = (usuario != null ? usuario.getId() : null);
+			usuarioLogado = usuario;
+			usuarioId = (usuario != null ? usuario.getId() : null);
 		}
-
 
 		public static void setUsuarioId(Integer id) {
-			SessaoTemp.usuarioId = id;
+			usuarioId = id;
 		}
 
-		/** Retorna o usuário logado (ou null se não houver). */
 		public static Usuario getUsuarioLogado() {
 			return usuarioLogado;
 		}
 
-		/** Retorna o ID do usuário logado (ou null se não houver). */
 		public static Integer getUsuarioId() {
 			if (usuarioLogado != null)
 				return usuarioLogado.getId();
 			return usuarioId;
 		}
 
-
-		/** Diz se existe sessão ativa em memória. */
 		public static boolean isAtiva() {
-			return usuarioLogado != null;
+			return usuarioLogado != null || usuarioId != null;
 		}
 
-		/** Limpa a sessão em memória (use no logout). */
 		public static void limpar() {
 			usuarioLogado = null;
 			usuarioId = null;
 		}
-
 	}
-
 }

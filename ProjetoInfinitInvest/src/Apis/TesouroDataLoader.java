@@ -15,12 +15,23 @@ import java.util.Map;
 
 public class TesouroDataLoader {
 
+	// ==========================================================
+	// CONTEXTO DO LOADER
+	// ==========================================================
+	// Lê um CSV local do Tesouro Direto, extrai títulos válidos,
+	// remove duplicados (nome + ano) e retorna ordenado por vencimento.
+
+	// COLOQUE O CAMINHO RESPECTIVO DO SEU COMPUTADOR
 	private static final Path ARQUIVO_CSV = Paths.get("C:/Users/David/Documents/InfinitInvest/ProjetoInfinitInvest/src/Apis/precotaxatesourodireto.csv");
 
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
 
-	public static List<TituloTesouro> buscarTitulos(int anoMinimo) {
+	// ==========================================================
+	// API PÚBLICA
+	// ==========================================================
+	// Retorna títulos com ano de vencimento >= anoMinimo, sem duplicatas e ordenados.
 
+	public static List<TituloTesouro> buscarTitulos(int anoMinimo) {
 		List<TituloTesouro> titulos = new ArrayList<>();
 
 		if (!Files.exists(ARQUIVO_CSV)) {
@@ -28,6 +39,19 @@ public class TesouroDataLoader {
 			return titulos;
 		}
 
+		lerCsvETrazerTitulos(anoMinimo, titulos);
+
+		List<TituloTesouro> resultado = removerDuplicados(titulos);
+		resultado.sort(Comparator.comparing(TituloTesouro::getDataAsDate));
+		return resultado;
+	}
+
+	// ==========================================================
+	// LEITURA DO CSV
+	// ==========================================================
+	// Lê o arquivo, valida colunas mínimas e converte para TituloTesouro.
+
+	private static void lerCsvETrazerTitulos(int anoMinimo, List<TituloTesouro> out) {
 		try (BufferedReader br = Files.newBufferedReader(ARQUIVO_CSV)) {
 
 			String linha;
@@ -50,45 +74,69 @@ public class TesouroDataLoader {
 				String dataVenc = c[1].trim();
 				String taxaCompra = c[3].trim();
 
-				// ✅ PU COMPRA MANHÃ (preço unitário)
-				double puCompra;
-				try {
-					puCompra = Double.parseDouble(c[5].replace("R$", "").replace(".", "").replace(",", ".").trim());
-				} catch (Exception e) {
-					continue; // ignora linha inválida
-				}
-
-				Date data;
-				try {
-					data = SDF.parse(dataVenc);
-				} catch (Exception e) {
-					continue;
-				}
-
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(data);
-
-				if (cal.get(Calendar.YEAR) < anoMinimo)
+				double puCompra = parsePuCompra(c[5]);
+				if (puCompra <= 0)
 					continue;
 
-				titulos.add(new TituloTesouro(nome, dataVenc, taxaCompra, puCompra));
+				Date data = parseData(dataVenc);
+				if (data == null)
+					continue;
+
+				int ano = getAno(data);
+				if (ano < anoMinimo)
+					continue;
+
+				out.add(new TituloTesouro(nome, dataVenc, taxaCompra, puCompra));
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
 
-		// 🔹 Remove duplicados (nome + ano)
+	// ==========================================================
+	// DEDUPLICAÇÃO
+	// ==========================================================
+	// Remove títulos duplicados com base em (nome + ano de vencimento).
+
+	private static List<TituloTesouro> removerDuplicados(List<TituloTesouro> titulos) {
 		Map<String, TituloTesouro> mapa = new HashMap<>();
 
 		for (TituloTesouro t : titulos) {
 			String chave = t.getNome().toLowerCase() + "_" + t.getAnoVencimento();
 			mapa.putIfAbsent(chave, t);
-        }
+		}
 
-		List<TituloTesouro> resultado = new ArrayList<>(mapa.values());
-		resultado.sort(Comparator.comparing(TituloTesouro::getDataAsDate));
+		return new ArrayList<>(mapa.values());
+	}
 
-		return resultado;
-    }
+	// ==========================================================
+	// HELPERS: PARSE
+	// ==========================================================
+	// Conversões e validações de campos do CSV.
+
+	private static double parsePuCompra(String raw) {
+		try {
+			if (raw == null)
+				return -1;
+			String s = raw.replace("R$", "").replace(".", "").replace(",", ".").trim();
+			return Double.parseDouble(s);
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	private static Date parseData(String raw) {
+		try {
+			return SDF.parse(raw);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static int getAno(Date data) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(data);
+		return cal.get(Calendar.YEAR);
+	}
 }
