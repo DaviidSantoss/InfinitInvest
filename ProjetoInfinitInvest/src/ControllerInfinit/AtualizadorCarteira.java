@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import Apis.Brapi;
-import Apis.Brapi.AssetInfo;
+import Apis.Brapi.informacoesDoAtivo;
 import Apis.LogoKit;
 import BancoInfinit.Dao;
 import BancoInfinit.SessaoDAO.SessaoTemp;
@@ -105,12 +105,12 @@ public class AtualizadorCarteira {
 
 						String tickerApi = normalizarTickerB3ParaApi(ticker);
 
-						AssetInfo info = Brapi.buscarAssetInfo(tickerApi);
-						if (info == null || info.price == null || info.price <= 0)
+						informacoesDoAtivo info = Brapi.buscarAssetInfo(tickerApi);
+						if (info == null || info.preco == null || info.preco <= 0)
 							return;
 
 						double precoMedio = ativo.getPrecoMedio();
-						double precoAtual = info.price;
+						double precoAtual = info.preco;
 
 						if (precoMedio > 0) {
 							double ratio = precoAtual / precoMedio;
@@ -540,7 +540,7 @@ public class AtualizadorCarteira {
 
 	private Double safePrice(String ticker) {
 		try {
-			return Brapi.buscarAssetPrice(ticker);
+			return Brapi.buscarPrecoAcoes(ticker);
 		} catch (Exception e) {
 			return null;
 		}

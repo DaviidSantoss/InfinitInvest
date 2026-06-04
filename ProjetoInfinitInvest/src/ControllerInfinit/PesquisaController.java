@@ -160,7 +160,7 @@ public class PesquisaController {
 
 		currentTask = executor.submit(() -> {
 			try {
-				List<String> resultados = Brapi.buscarAtivosPorTipo(Brapi.AssetType.UNKNOWN, query);
+				List<String> resultados = Brapi.buscarAtivosPorTipo(Brapi.tipoDoAtivo.DESCONHECIDO, query);
 
 				String qUp = query.trim().toUpperCase();
 				if (queryEhTickerCompleto(qUp)) {
@@ -435,7 +435,7 @@ public class PesquisaController {
 				int dash2 = tk.indexOf(" ");
 				if (dash2 > 0)
 					tk = tk.substring(0, dash2).trim();
-				return Brapi.buscarAssetPrice(tk);
+				return Brapi.buscarPrecoAcoes(tk);
 			}).thenAccept(p -> Platform.runLater(() -> {
 				if (getItem() != null && getItem().equals(itemFinal)) {
 					if (p == null || p <= 0)

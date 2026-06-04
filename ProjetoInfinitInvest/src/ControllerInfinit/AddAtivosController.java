@@ -11,8 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import Apis.Brapi;
-import Apis.Brapi.AssetInfo;
-import Apis.Brapi.AssetType;
+import Apis.Brapi.informacoesDoAtivo;
+import Apis.Brapi.tipoDoAtivo;
 import Apis.LogoKit;
 import Apis.TituloTesouro;
 import BancoInfinit.Dao;
@@ -51,7 +51,7 @@ public class AddAtivosController {
 	private final java.util.concurrent.atomic.AtomicBoolean atualizandoTesouro = new java.util.concurrent.atomic.AtomicBoolean(false);
 	private final java.util.concurrent.atomic.AtomicBoolean atualizandoRendaFixa = new java.util.concurrent.atomic.AtomicBoolean(false);
 
-	private AssetType tipoSelecionado = AssetType.ACOES;
+	private tipoDoAtivo tipoSelecionado = tipoDoAtivo.ACOES;
 	private TituloTesouro tesouroSelecionado;
 
 	@SuppressWarnings("deprecation")
@@ -157,15 +157,15 @@ public class AddAtivosController {
 
 						ticker = ticker.trim().toUpperCase();
 
-						AssetInfo info = Brapi.buscarAssetInfo(ticker);
-						if (info == null || info.price == null || info.price <= 0)
+						informacoesDoAtivo info = Brapi.buscarAssetInfo(ticker);
+						if (info == null || info.preco == null || info.preco <= 0)
 							return;
 
 						// ⚠️ Dao dentro da task evita concorrência perigosa
 						Dao dao = new Dao();
 
 						double precoMedio = ativo.getPrecoMedio();
-						double precoAtual = info.price;
+						double precoAtual = info.preco;
 						double variacao = precoMedio != 0 ? ((precoAtual - precoMedio) / precoMedio) * 100 : 0;
 						double saldo = precoAtual * ativo.getQuantidade();
 
@@ -233,7 +233,7 @@ public class AddAtivosController {
 						double precoMedio = ativo.getPrecoMedio();
 
 						String tickerApi = resolverTickerCriptoParaPreco(symbol, precoMedio);
-						Double preco = Brapi.buscarAssetPrice(tickerApi);
+						Double preco = Brapi.buscarPrecoAcoes(tickerApi);
 
 						if (preco == null || preco <= 0)
 							return;
@@ -282,13 +282,13 @@ public class AddAtivosController {
 		view.getTipoCombo().valueProperty().addListener((obs, oldVal, newVal) -> {
 
 			tipoSelecionado = switch (newVal) {
-			case "Ações" -> AssetType.ACOES;
-			case "FIIs" -> AssetType.FIIS;
-			case "Criptomoeda" -> AssetType.CRYPTO;
-			case "ETFs" -> AssetType.ETF;
-			case "Tesouro Direto" -> AssetType.TREASURY;
-			case "Renda fixa" -> AssetType.UNKNOWN;
-			default -> AssetType.UNKNOWN;
+			case "Ações" -> tipoDoAtivo.ACOES;
+			case "FIIs" -> tipoDoAtivo.FIIS;
+			case "Criptomoeda" -> tipoDoAtivo.CRYPTO;
+			case "ETFs" -> tipoDoAtivo.ETF;
+			case "Tesouro Direto" -> tipoDoAtivo.TESOURO;
+			case "Renda fixa" -> tipoDoAtivo.DESCONHECIDO;
+			default -> tipoDoAtivo.DESCONHECIDO;
 			};
 
 			view.getAtivoCombo().clear();
@@ -298,7 +298,7 @@ public class AddAtivosController {
 
 			switch (tipoSelecionado) {
 			case CRYPTO -> qtd.setText("0,00000001"); // Cripto: ultra fracionado
-			case TREASURY -> qtd.setText("0,01"); // Tesouro: mínimo 1% do título
+			case TESOURO -> qtd.setText("0,01"); // Tesouro: mínimo 1% do título
 			default -> qtd.setText("1"); // Ações, FIIs, ETFs
 			}
 		});
@@ -324,7 +324,7 @@ public class AddAtivosController {
 			Task<List<?>> task = new Task<>() {
 				@Override
 				protected List<?> call() {
-					if (tipoSelecionado == AssetType.TREASURY) {
+					if (tipoSelecionado == tipoDoAtivo.TESOURO) {
 						return Brapi.buscarTreasuries(query); // List<TituloTesouro>
 					}
 					return Brapi.buscarAtivosPorTipo(tipoSelecionado, query); // List<String>
@@ -338,7 +338,7 @@ public class AddAtivosController {
 
 				suggestionsMenu.getItems().clear();
 
-				if (tipoSelecionado == AssetType.TREASURY) {
+				if (tipoSelecionado == tipoDoAtivo.TESOURO) {
 
 					List<TituloTesouro> titulos = (List<TituloTesouro>) results;
 
@@ -378,7 +378,7 @@ public class AddAtivosController {
 
 						item.setOnAction(a -> {
 
-							if (tipoSelecionado == AssetType.CRYPTO) {
+							if (tipoSelecionado == tipoDoAtivo.CRYPTO) {
 
 								String[] parts = s.split(" - R\\$ ");
 								String nomeESimbolo = parts[0];
@@ -417,7 +417,7 @@ public class AddAtivosController {
 
 		qtdField.textProperty().addListener((obs, oldVal, newVal) -> {
 
-			if (tipoSelecionado == AssetType.ACOES || tipoSelecionado == AssetType.FIIS || tipoSelecionado == AssetType.ETF) {
+			if (tipoSelecionado == tipoDoAtivo.ACOES || tipoSelecionado == tipoDoAtivo.FIIS || tipoSelecionado == tipoDoAtivo.ETF) {
 				atualizarTotal();
 				return;
 			}
@@ -438,7 +438,7 @@ public class AddAtivosController {
 				return;
 			}
 
-			int limiteCasas = (tipoSelecionado == AssetType.TREASURY) ? 2 : 8;
+			int limiteCasas = (tipoSelecionado == tipoDoAtivo.TESOURO) ? 2 : 8;
 
 			if (newVal.contains(",")) {
 				String[] parts = newVal.split(",", -1);
@@ -512,9 +512,9 @@ public class AddAtivosController {
 				if (usuarioId == null)
 					return;
 
-				if (tipoSelecionado == AssetType.CRYPTO) {
+				if (tipoSelecionado == tipoDoAtivo.CRYPTO) {
 					processarAdicaoCripto(usuarioId, ticker, quantidade, precoAtual);
-				} else if (tipoSelecionado == AssetType.ACOES || tipoSelecionado == AssetType.FIIS || tipoSelecionado == AssetType.ETF) {
+				} else if (tipoSelecionado == tipoDoAtivo.ACOES || tipoSelecionado == tipoDoAtivo.FIIS || tipoSelecionado == tipoDoAtivo.ETF) {
 					processarAdicaoAcoes(usuarioId, categoria, ticker, quantidade, precoAtual);
 				}
 
@@ -1153,22 +1153,22 @@ public class AddAtivosController {
 	@SuppressWarnings("unused")
 	private void buscarPrecoAtual(String ticker) {
 
-		Task<AssetInfo> task = new Task<>() {
+		Task<informacoesDoAtivo> task = new Task<>() {
 			@Override
-			protected AssetInfo call() {
+			protected informacoesDoAtivo call() {
 				return Brapi.buscarAssetInfo(ticker);
 			}
 		};
 
 		task.setOnSucceeded(evt -> {
 
-			AssetInfo info = task.getValue();
+			informacoesDoAtivo info = task.getValue();
 
-			if (info != null && info.price != null) {
+			if (info != null && info.preco != null) {
 				view.precoSetByApi = true;
-				view.getPrecoField().setText(CURRENCY.format(info.price));
+				view.getPrecoField().setText(CURRENCY.format(info.preco));
 				atualizarTotal();
-				listaView.atualizarPrecoVisual(ticker, info.price);
+				listaView.atualizarPrecoVisual(ticker, info.preco);
 			}
 		});
 
@@ -1201,7 +1201,7 @@ public class AddAtivosController {
 		double melhorScore = Double.POSITIVE_INFINITY;
 
 		for (String cand : cands) {
-			Double p = Brapi.buscarAssetPrice(cand);
+			Double p = Brapi.buscarPrecoAcoes(cand);
 			if (p == null || p <= 0)
 				continue;
 

@@ -2,16 +2,6 @@
   "BBAS3": {
     "data": [
       {
-        "date": "2025-03-11",
-        "unadjustedValue": 0.64042,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-03-20",
-        "value": 0.64042
-      },
-      {
         "date": "2025-06-02",
         "unadjustedValue": 0.42471,
         "period": null,
@@ -40,53 +30,33 @@
         "currency": "BRL",
         "paymentDate": "2025-12-12",
         "value": 0.04583
+      },
+      {
+        "date": "2026-02-23",
+        "unadjustedValue": 0.22149,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-03-05",
+        "value": 0.22149
+      },
+      {
+        "date": "2026-03-02",
+        "unadjustedValue": 0.07014,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-03-11",
+        "value": 0.07014
       }
     ],
-    "fetchedAt": 1769726214859,
+    "fetchedAt": 1779221163742,
     "hadData": true
   },
   "VGHF11": {
     "data": [
-      {
-        "date": "2025-01-31",
-        "unadjustedValue": 0.09,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-02-07",
-        "value": 0.09
-      },
-      {
-        "date": "2025-02-28",
-        "unadjustedValue": 0.09,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-03-11",
-        "value": 0.09
-      },
-      {
-        "date": "2025-03-31",
-        "unadjustedValue": 0.09,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-04-07",
-        "value": 0.09
-      },
-      {
-        "date": "2025-04-30",
-        "unadjustedValue": 0.09,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-05-08",
-        "value": 0.09
-      },
       {
         "date": "2025-05-30",
         "unadjustedValue": 0.09,
@@ -166,23 +136,53 @@
         "currency": "BRL",
         "paymentDate": "2026-01-08",
         "value": 0.07
-      }
-    ],
-    "fetchedAt": 1769726372828,
-    "hadData": true
-  },
-  "VALE3": {
-    "data": [
+      },
       {
-        "date": "2025-03-07",
-        "unadjustedValue": 2.14185,
+        "date": "2026-01-30",
+        "unadjustedValue": 0.07,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
-        "paymentDate": "2025-03-14",
-        "value": 2.14185
+        "paymentDate": "2026-02-06",
+        "value": 0.07
       },
+      {
+        "date": "2026-02-27",
+        "unadjustedValue": 0.07,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-03-06",
+        "value": 0.07
+      },
+      {
+        "date": "2026-03-31",
+        "unadjustedValue": 0.07,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-04-08",
+        "value": 0.07
+      },
+      {
+        "date": "2026-04-30",
+        "unadjustedValue": 0.07,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-05-08",
+        "value": 0.07
+      }
+    ],
+    "fetchedAt": 1779221163494,
+    "hadData": true
+  },
+  "VALE3": {
+    "data": [
       {
         "date": "2025-08-12",
         "unadjustedValue": 1.89539,
@@ -200,65 +200,15 @@
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
-        "paymentDate": "2026-03-04",
+        "paymentDate": "2026-01-07",
         "value": 3.58177
       }
     ],
-    "fetchedAt": 1769726256151,
+    "fetchedAt": 1779221068275,
     "hadData": true
   },
   "BBDC3": {
     "data": [
-      {
-        "date": "2025-02-03",
-        "unadjustedValue": 0.01725,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-03-05",
-        "value": 0.01725
-      },
-      {
-        "date": "2025-03-05",
-        "unadjustedValue": 0.02374,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-04-01",
-        "value": 0.02374
-      },
-      {
-        "date": "2025-03-31",
-        "unadjustedValue": 0.20711,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-10-31",
-        "value": 0.20711
-      },
-      {
-        "date": "2025-04-01",
-        "unadjustedValue": 0.02374,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-05-02",
-        "value": 0.02374
-      },
-      {
-        "date": "2025-05-02",
-        "unadjustedValue": 0.01725,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-06-02",
-        "value": 0.01725
-      },
       {
         "date": "2025-06-02",
         "unadjustedValue": 0.01725,
@@ -276,7 +226,7 @@
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
-        "paymentDate": "2026-01-31",
+        "paymentDate": "2026-01-30",
         "value": 0.27015
       },
       {
@@ -301,13 +251,13 @@
       },
       {
         "date": "2025-09-01",
-        "unadjustedValue": 0.01725,
+        "unadjustedValue": 0.02374,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2025-10-01",
-        "value": 0.01725
+        "value": 0.02374
       },
       {
         "date": "2025-09-29",
@@ -321,13 +271,13 @@
       },
       {
         "date": "2025-10-01",
-        "unadjustedValue": 0.02374,
+        "unadjustedValue": 0.01725,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2025-11-03",
-        "value": 0.02374
+        "value": 0.01725
       },
       {
         "date": "2025-11-03",
@@ -341,13 +291,13 @@
       },
       {
         "date": "2025-12-01",
-        "unadjustedValue": 0.02374,
+        "unadjustedValue": 0.01897,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2026-01-02",
-        "value": 0.02374
+        "value": 0.01897
       },
       {
         "date": "2025-12-29",
@@ -358,23 +308,63 @@
         "currency": "BRL",
         "paymentDate": "2026-07-31",
         "value": 0.35119
-      }
-    ],
-    "fetchedAt": 1769726300761,
-    "hadData": true
-  },
-  "PETR4": {
-    "data": [
+      },
       {
-        "date": "2025-04-16",
-        "unadjustedValue": 0.74813,
+        "date": "2026-01-02",
+        "unadjustedValue": 0.01725,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
-        "paymentDate": "2025-06-20",
-        "value": 0.74813
+        "paymentDate": "2026-02-02",
+        "value": 0.01725
       },
+      {
+        "date": "2026-02-02",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-03-02",
+        "value": 0.01725
+      },
+      {
+        "date": "2026-03-02",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-04-01",
+        "value": 0.01725
+      },
+      {
+        "date": "2026-04-01",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-05-04",
+        "value": 0.01725
+      },
+      {
+        "date": "2026-05-04",
+        "unadjustedValue": 0.01725,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-06-01",
+        "value": 0.01725
+      }
+    ],
+    "fetchedAt": 1779221162859,
+    "hadData": true
+  },
+  "PETR4": {
+    "data": [
       {
         "date": "2025-06-02",
         "unadjustedValue": 0.90917,
@@ -397,116 +387,96 @@
       },
       {
         "date": "2025-12-22",
-        "unadjustedValue": 0.94321,
+        "unadjustedValue": 0.9617,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2026-03-20",
-        "value": 0.94321
+        "value": 0.9617
+      },
+      {
+        "date": "2026-04-22",
+        "unadjustedValue": 0.65587,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-06-22",
+        "value": 0.65587
       }
     ],
-    "fetchedAt": 1769726238457,
+    "fetchedAt": 1779221068579,
     "hadData": true
   },
   "CMIG4": {
     "data": [
       {
-        "date": "2025-03-26",
-        "unadjustedValue": 0.19,
+        "date": "2025-06-24",
+        "unadjustedValue": 0.20861,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2026-12-30",
-        "value": 0.19
-      },
-      {
-        "date": "2025-05-02",
-        "unadjustedValue": 0.66,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-12-30",
-        "value": 0.66
+        "value": 0.20861
       },
       {
         "date": "2025-09-30",
-        "unadjustedValue": 0.21,
+        "unadjustedValue": 0.2114,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2026-12-30",
-        "value": 0.21
+        "value": 0.2114
       },
       {
         "date": "2025-12-23",
-        "unadjustedValue": 0.15,
+        "unadjustedValue": 0.14587,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2025-12-30",
-        "value": 0.15
+        "value": 0.14587
       },
       {
         "date": "2025-12-26",
-        "unadjustedValue": 0.24,
+        "unadjustedValue": 0.2368,
         "period": null,
         "declarationDate": null,
         "recordDate": null,
         "currency": "BRL",
         "paymentDate": "2026-12-30",
-        "value": 0.24
+        "value": 0.2368
+      },
+      {
+        "date": "2026-03-25",
+        "unadjustedValue": 0.23,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2027-12-30",
+        "value": 0.23
+      },
+      {
+        "date": "2026-05-04",
+        "unadjustedValue": 0.23636,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-12-30",
+        "value": 0.23636
       }
     ],
-    "fetchedAt": 1769726275945,
+    "fetchedAt": 1779221166967,
     "hadData": true
   },
   "MXRF11": {
     "data": [
-      {
-        "date": "2025-01-31",
-        "unadjustedValue": 0.09,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-02-14",
-        "value": 0.09
-      },
-      {
-        "date": "2025-02-28",
-        "unadjustedValue": 0.09,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-03-18",
-        "value": 0.09
-      },
-      {
-        "date": "2025-03-31",
-        "unadjustedValue": 0.09,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-04-14",
-        "value": 0.09
-      },
-      {
-        "date": "2025-04-30",
-        "unadjustedValue": 0.1,
-        "period": null,
-        "declarationDate": null,
-        "recordDate": null,
-        "currency": "BRL",
-        "paymentDate": "2025-05-15",
-        "value": 0.1
-      },
       {
         "date": "2025-05-30",
         "unadjustedValue": 0.1,
@@ -586,9 +556,49 @@
         "currency": "BRL",
         "paymentDate": "2026-01-15",
         "value": 0.1
+      },
+      {
+        "date": "2026-01-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-02-13",
+        "value": 0.1
+      },
+      {
+        "date": "2026-02-27",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-03-13",
+        "value": 0.1
+      },
+      {
+        "date": "2026-03-31",
+        "unadjustedValue": 0.095,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-04-15",
+        "value": 0.095
+      },
+      {
+        "date": "2026-04-30",
+        "unadjustedValue": 0.1,
+        "period": null,
+        "declarationDate": null,
+        "recordDate": null,
+        "currency": "BRL",
+        "paymentDate": "2026-05-15",
+        "value": 0.1
       }
     ],
-    "fetchedAt": 1769726327251,
+    "fetchedAt": 1779221166995,
     "hadData": true
   }
 }
